@@ -3,9 +3,9 @@ package com.setycz.chickens.capabilities;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class InventoryStroageModifiable extends ItemStackHandler
@@ -86,16 +86,16 @@ public class InventoryStroageModifiable extends ItemStackHandler
 	    
 	    public ITextComponent getDisplayName()
 	    {
-	        return new TextComponentTranslation(name);
+	        return new TranslationTextComponent(name);
 	    }
 	    
 	    
-	    public void writeToNBT(NBTTagCompound compound)
+	    public void writeToNBT(CompoundNBT compound)
 	    {
 	    	compound.setTag("Inventory", serializeNBT());
         }
 	     
-	    public void readFromNBT(NBTTagCompound compound)
+	    public void readFromNBT(CompoundNBT compound)
 	    {
 	    	deserializeNBT(compound.getCompoundTag("Inventory"));
 	    }

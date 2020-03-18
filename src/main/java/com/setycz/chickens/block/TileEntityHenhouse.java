@@ -10,20 +10,20 @@ import com.setycz.chickens.client.gui.GuiHenhouse;
 import com.setycz.chickens.client.gui.IInventoryGui;
 import com.setycz.chickens.client.gui.container.ContainerHenhouse;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.Capability;
@@ -50,7 +50,7 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
     			@Override
     			public boolean canInsertSlot(int slotIndex, ItemStack stackIn)
     			{
-    				if(slotIndex == hayBaleSlotIndex && stackIn.getItem() == Item.getItemFromBlock(Blocks.HAY_BLOCK)) 
+    				if(slotIndex == hayBaleSlotIndex && stackIn.getItem() == Item.getItemFromBlock(Blocks.HAY_BLOCK))
     					return true;
     				else if(slotIndex == dirtSlotIndex && stackIn.getItem() == Item.getItemFromBlock(Blocks.DIRT))
     					return true;
@@ -211,13 +211,13 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
         	
         	if(!stack.isEmpty())
         	{
-        		this.world.spawnEntity(new EntityItem(world, this.pos.getX(), this.pos.getY()+1, this.pos.getZ(), stack));
+        		this.world.spawnEntity(new ItemEntity(world, this.pos.getX(), this.pos.getY()+1, this.pos.getZ(), stack));
         	}
         }
 	}
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public CompoundNBT writeToNBT(CompoundNBT compound) {
         super.writeToNBT(compound);
 
         //TODO I sort of broke this with custom names, I need to fix this later
@@ -233,7 +233,7 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
+    public void readFromNBT(CompoundNBT compound) {
         super.readFromNBT(compound);
 
         //TODO I sort of broke this with custom names, I need to fix this later
@@ -267,7 +267,7 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
 
     @Override
     public ITextComponent getDisplayName() {
-        return new TextComponentTranslation(slots.getName());
+        return new TranslationTextComponent(slots.getName());
     }
 
     public void setCustomName(String customName) {
@@ -275,13 +275,13 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
     }
 
     @Override
-    public Container createContainer(InventoryPlayer inventoryplayer) {
+    public Container createContainer(PlayerInventory inventoryplayer) {
         return new ContainerHenhouse(inventoryplayer, this);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiContainer createGui(InventoryPlayer inventoryplayer) {
+    public ContainerScreen createGui(PlayerInventory inventoryplayer) {
         return new GuiHenhouse(inventoryplayer, this);
     }
 
@@ -291,7 +291,7 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
 
 	@SuppressWarnings("unchecked")
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(Capability<T> capability, Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return (T) this.slots;
         }
@@ -299,7 +299,7 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
     }
 		
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(Capability<?> capability, Direction facing) {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
         super.hasCapability(capability, facing);
     }

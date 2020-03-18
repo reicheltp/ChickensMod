@@ -12,7 +12,7 @@ import mcjty.theoneprobe.api.IProbeInfoEntityProvider;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 public class TheOneProbePlugin implements IProbeInfoEntityProvider  {
@@ -24,7 +24,7 @@ public class TheOneProbePlugin implements IProbeInfoEntityProvider  {
 	}
 
 	@Override
-	public void addProbeEntityInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data) 
+	public void addProbeEntityInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, Entity entity, IProbeHitEntityData data)
 	{
 		
 		if(entity instanceof EntityChickensChicken) {

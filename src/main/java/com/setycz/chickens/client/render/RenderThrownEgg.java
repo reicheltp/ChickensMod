@@ -5,8 +5,8 @@ import com.setycz.chickens.entity.EntityColoredEgg;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 public class RenderThrownEgg extends RenderSnowball<EntityColoredEgg>{
 
 	
-	public RenderThrownEgg(RenderManager renderManagerIn, Item itemIn, RenderItem itemRendererIn) {
+	public RenderThrownEgg(EntityRendererManager renderManagerIn, Item itemIn, RenderItem itemRendererIn) {
 		super(renderManagerIn, itemIn, itemRendererIn);
 	}
 
@@ -27,7 +27,7 @@ public class RenderThrownEgg extends RenderSnowball<EntityColoredEgg>{
 	
 	public static class EntityColoredEggFactory implements IRenderFactory<EntityColoredEgg>{
 		@Override
-		public Render<? super EntityColoredEgg> createRenderFor(RenderManager manager) {
+		public EntityRenderer<? super EntityColoredEgg> createRenderFor(EntityRendererManager manager) {
 			return new RenderThrownEgg(manager, ChickensMod.coloredEgg, Minecraft.getMinecraft().getRenderItem());
 		}
 	}

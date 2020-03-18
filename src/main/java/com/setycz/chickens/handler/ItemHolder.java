@@ -1,6 +1,5 @@
 package com.setycz.chickens.handler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.annotation.Nullable;
@@ -10,12 +9,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.setycz.chickens.ChickensMod;
 
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemHolder
 {
@@ -23,7 +22,7 @@ public class ItemHolder
 	
 	private String itemID;
 	private int metaID;
-	private NBTTagCompound nbtData;
+	private CompoundNBT nbtData;
 	private JsonObject nbtRawJson;
 	
 	private boolean isComplete = false;

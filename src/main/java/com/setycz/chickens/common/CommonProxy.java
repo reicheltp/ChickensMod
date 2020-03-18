@@ -8,9 +8,9 @@ import com.setycz.chickens.registry.LiquidEggRegistry;
 import com.setycz.chickens.registry.LiquidEggRegistryItem;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
-import net.minecraft.dispenser.BehaviorProjectileDispense;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
@@ -40,11 +40,11 @@ public class CommonProxy {
 */
 
 	public void registerLiquidEgg(LiquidEggRegistryItem liquidEgg) {
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ChickensMod.liquidEgg, new DispenseLiquidEgg());
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ChickensMod.coloredEgg, new DispenseColorEgg());
+		DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.putObject(ChickensMod.liquidEgg, new DispenseLiquidEgg());
+		DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.putObject(ChickensMod.coloredEgg, new DispenseColorEgg());
 	}
 
-	class DispenseColorEgg extends BehaviorProjectileDispense {
+	class DispenseColorEgg extends ProjectileDispenseBehavior {
 		@Override
 		protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
 			EntityColoredEgg entityColoredEgg = new EntityColoredEgg(worldIn, position.getX(), position.getY(),
@@ -54,11 +54,11 @@ public class CommonProxy {
 		}
 	}
 
-	class DispenseLiquidEgg extends BehaviorDefaultDispenseItem {
+	class DispenseLiquidEgg extends DefaultDispenseItemBehavior {
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			ItemLiquidEgg itemLiquidEgg = (ItemLiquidEgg) stack.getItem();
-			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().getValue(BlockDispenser.FACING));
+			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().getValue(DispenserBlock.FACING));
 			Block liquid = LiquidEggRegistry.findById(stack.getMetadata()).getLiquid();
 			if (!itemLiquidEgg.tryPlaceContainedLiquid(null, source.getWorld(), blockpos, liquid)) {
 				return super.dispenseStack(source, stack);

@@ -14,7 +14,7 @@ import com.setycz.chickens.registry.LiquidEggRegistryItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -42,7 +42,7 @@ public class ClientProxy extends CommonProxy {
                 ChickensMod.spawnEgg, ChickensMod.coloredEgg, ChickensMod.liquidEgg);
 
         // chicken entity registration
-        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        EntityRendererManager renderManager = Minecraft.getMinecraft().getRenderManager();
         renderManager.entityRenderMap.put(EntityChickensChicken.class, new RenderChickensChicken(renderManager, new ModelChickensChicken()));
         
           //noinspection ConstantConditions

@@ -5,13 +5,13 @@ import javax.annotation.Nonnull;
 import com.setycz.chickens.block.TileEntityHenhouse;
 import com.setycz.chickens.capabilities.InventoryStroageModifiable;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -25,10 +25,10 @@ public class ContainerHenhouse extends Container {
     private int energy;
     
      
-    public ContainerHenhouse(InventoryPlayer playerInventory, TileEntityHenhouse tileEntityHenhouse) {
+    public ContainerHenhouse(PlayerInventory playerInventory, TileEntityHenhouse tileEntityHenhouse) {
         this.tileEntityHenhouse = tileEntityHenhouse;
          
-        this.invTileEntityHenhouse = (InventoryStroageModifiable) tileEntityHenhouse.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.DOWN);
+        this.invTileEntityHenhouse = (InventoryStroageModifiable) tileEntityHenhouse.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
              
         //input 
         // Overriding canTake and decrStack to use the internal extract and by pass the locks in place for other things taking items. 
@@ -36,7 +36,7 @@ public class ContainerHenhouse extends Container {
         this.addSlotToContainer(new SlotItemHandler(invTileEntityHenhouse, TileEntityHenhouse.hayBaleSlotIndex, 25, 19)
         		{
         			@Override
-        			public boolean canTakeStack(EntityPlayer playerIn)
+        			public boolean canTakeStack(PlayerEntity playerIn)
         			{
         				return !invTileEntityHenhouse.extractItemInternal(TileEntityHenhouse.hayBaleSlotIndex, 1, true).isEmpty();
         			}
@@ -74,12 +74,12 @@ public class ContainerHenhouse extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
+    public boolean canInteractWith(PlayerEntity playerIn) {
         return true;
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
 
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
@@ -108,7 +108,7 @@ public class ContainerHenhouse extends Container {
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer playerIn) {
+    public void onContainerClosed(PlayerEntity playerIn) {
         super.onContainerClosed(playerIn);
         //tileEntityHenhouse.closeInventory(playerIn);
     }

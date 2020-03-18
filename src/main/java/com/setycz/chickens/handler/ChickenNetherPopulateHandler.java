@@ -5,12 +5,12 @@ import javax.annotation.Nullable;
 import com.setycz.chickens.entity.EntityChickensChicken;
 
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.init.Biomes;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldEntitySpawner;
+import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
@@ -40,7 +40,7 @@ public class ChickenNetherPopulateHandler {
             BlockPos basePosition = getRandomChunkPosition(event.getWorld(), event.getChunkX(), event.getChunkZ());
             BlockPos spawnPos = findFloor(event.getWorld(), basePosition);
 
-            IEntityLivingData livingData = spawn(event.getWorld(), null, spawnPos);
+            ILivingEntityData livingData = spawn(event.getWorld(), null, spawnPos);
             livingData = spawn(event.getWorld(), livingData, spawnPos.north());
             livingData = spawn(event.getWorld(), livingData, spawnPos.south());
             livingData = spawn(event.getWorld(), livingData, spawnPos.west());
@@ -57,7 +57,7 @@ public class ChickenNetherPopulateHandler {
     }
 
     @Nullable
-    private IEntityLivingData spawn(World world, @Nullable IEntityLivingData livingData, BlockPos spawnPos) {
+    private ILivingEntityData spawn(World world, @Nullable ILivingEntityData livingData, BlockPos spawnPos) {
         if (WorldEntitySpawner.canCreatureTypeSpawnAtLocation(EntitySpawnPlacementRegistry.getPlacementForEntity(EntityChickensChicken.class), world, spawnPos)) {
             EntityChickensChicken entity = new EntityChickensChicken(world);
             entity.setLocationAndAngles(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5, world.rand.nextFloat() * 360.0F, 0.0F);

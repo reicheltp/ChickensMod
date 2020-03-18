@@ -5,13 +5,13 @@ import java.util.List;
 import com.setycz.chickens.entity.EntityChickensChicken;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
@@ -37,7 +37,7 @@ public class ItemAnalyzer extends Item {
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target, EnumHand hand) {
+    public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity playerIn, LivingEntity target, Hand hand) {
         if (target.world.isRemote || !(target instanceof EntityChickensChicken)) {
             return false;
         }
@@ -45,22 +45,22 @@ public class ItemAnalyzer extends Item {
         EntityChickensChicken chicken = (EntityChickensChicken) target;
         chicken.setStatsAnalyzed(true);
 
-        TextComponentString chickenName = new TextComponentString(chicken.getName());
+        StringTextComponent chickenName = new StringTextComponent(chicken.getName());
         chickenName.getStyle().setBold(true).setColor(TextFormatting.GOLD);
         playerIn.sendMessage(chickenName);
 
-        playerIn.sendMessage(new TextComponentTranslation("entity.ChickensChicken.tier", chicken.getTier()));
+        playerIn.sendMessage(new TranslationTextComponent("entity.ChickensChicken.tier", chicken.getTier()));
 
-        playerIn.sendMessage(new TextComponentTranslation("entity.ChickensChicken.growth", chicken.getGrowth()));
-        playerIn.sendMessage(new TextComponentTranslation("entity.ChickensChicken.gain", chicken.getGain()));
-        playerIn.sendMessage(new TextComponentTranslation("entity.ChickensChicken.strength", chicken.getStrength()));
+        playerIn.sendMessage(new TranslationTextComponent("entity.ChickensChicken.growth", chicken.getGrowth()));
+        playerIn.sendMessage(new TranslationTextComponent("entity.ChickensChicken.gain", chicken.getGain()));
+        playerIn.sendMessage(new TranslationTextComponent("entity.ChickensChicken.strength", chicken.getStrength()));
 
         if (!chicken.isChild()) {
             int layProgress = chicken.getLayProgress();
             if (layProgress <= 0) {
-                playerIn.sendMessage(new TextComponentTranslation("entity.ChickensChicken.nextEggSoon"));
+                playerIn.sendMessage(new TranslationTextComponent("entity.ChickensChicken.nextEggSoon"));
             } else {
-                playerIn.sendMessage(new TextComponentTranslation("entity.ChickensChicken.layProgress", layProgress));
+                playerIn.sendMessage(new TranslationTextComponent("entity.ChickensChicken.layProgress", layProgress));
             }
         }
 

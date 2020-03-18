@@ -3,8 +3,8 @@ package com.setycz.chickens.client.render;
 import com.setycz.chickens.entity.EntityChickensChicken;
 
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,9 +14,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Created by setyc on 12.02.2016.
  */
 @SideOnly(Side.CLIENT)
-public class RenderChickensChicken extends RenderLiving<EntityChickensChicken> {
+public class RenderChickensChicken extends MobRenderer<EntityChickensChicken> {
 
-    public RenderChickensChicken(RenderManager renderManagerIn, ModelBase modelBaseIn) {
+    public RenderChickensChicken(EntityRendererManager renderManagerIn, ModelBase modelBaseIn) {
         super(renderManagerIn, modelBaseIn, 0.3F);
     }
 

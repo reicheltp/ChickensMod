@@ -31,13 +31,13 @@ import joptsimple.internal.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Biomes;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.Items;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.launchwrapper.Launch;
@@ -192,7 +192,7 @@ public class ChickensMod {
 	}
 	
 	public static void registerItemForBlock(Block block) {
-		itemRegistry.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
+		itemRegistry.register(new BlockItem(block).setRegistryName(block.getRegistryName()));
 	}
 
 	private List<String> getChickenNames(Collection<ChickensRegistryItem> chickens) {
@@ -226,7 +226,7 @@ public class ChickensMod {
 		
 		if (biomesForSpawning.size() > 0) {
 			EntityRegistry.addSpawn(EntityChickensChicken.class, ConfigHandler.spawnProbability,
-					ConfigHandler.minBroodSize, ConfigHandler.maxBroodSize, EnumCreatureType.CREATURE,
+					ConfigHandler.minBroodSize, ConfigHandler.maxBroodSize, EntityClassification.CREATURE,
 					biomesForSpawning.toArray(new Biome[biomesForSpawning.size()]));
 			if (biomesForSpawning.contains(Biomes.HELL)) {
 				MinecraftForge.TERRAIN_GEN_BUS
@@ -360,7 +360,7 @@ public class ChickensMod {
 		LiquidEggRegistry.register(new LiquidEggRegistryItem(1, Blocks.FLOWING_LAVA, 0xff0000, FluidRegistry.LAVA));
 	}
 
-	ChickensRegistryItem createDyeChicken(EnumDyeColor color, String name) {
+	ChickensRegistryItem createDyeChicken(DyeColor color, String name) {
 		return new ChickensRegistryItem(new ResourceLocation(ChickensMod.MODID, name), name,
 				new ResourceLocation("chickens",
 						"textures/entity/" + Strings.join(name.split("(?=[A-Z])"), "_").toLowerCase() + ".png"),
@@ -369,7 +369,7 @@ public class ChickensMod {
 	}
 
 	//Used to handle a client side only method
-	private int getRGB(EnumDyeColor color) {
+	private int getRGB(DyeColor color) {
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
 			return color.getColorValue();
 		else return 0;
@@ -383,39 +383,39 @@ public class ChickensMod {
 				0xffffff, 0xffff00).setSpawnType(SpawnType.NONE));
 
 		// dye chickens
-		ChickensRegistryItem whiteChicken = createDyeChicken(EnumDyeColor.WHITE, "WhiteChicken")
+		ChickensRegistryItem whiteChicken = createDyeChicken(DyeColor.WHITE, "WhiteChicken")
 				.setDropItem(new ItemStack(Items.BONE)).setSpawnType(SpawnType.NORMAL);
 		chickens.add(whiteChicken);
-		ChickensRegistryItem yellowChicken = createDyeChicken(EnumDyeColor.YELLOW, "YellowChicken");
+		ChickensRegistryItem yellowChicken = createDyeChicken(DyeColor.YELLOW, "YellowChicken");
 		chickens.add(yellowChicken);
-		ChickensRegistryItem blueChicken = createDyeChicken(EnumDyeColor.BLUE, "BlueChicken");
+		ChickensRegistryItem blueChicken = createDyeChicken(DyeColor.BLUE, "BlueChicken");
 		chickens.add(blueChicken);
-		ChickensRegistryItem greenChicken = createDyeChicken(EnumDyeColor.GREEN, "GreenChicken");
+		ChickensRegistryItem greenChicken = createDyeChicken(DyeColor.GREEN, "GreenChicken");
 		chickens.add(greenChicken);
-		ChickensRegistryItem redChicken = createDyeChicken(EnumDyeColor.RED, "RedChicken");
+		ChickensRegistryItem redChicken = createDyeChicken(DyeColor.RED, "RedChicken");
 		chickens.add(redChicken);
-		ChickensRegistryItem blackChicken = createDyeChicken(EnumDyeColor.BLACK, "BlackChicken");
+		ChickensRegistryItem blackChicken = createDyeChicken(DyeColor.BLACK, "BlackChicken");
 		chickens.add(blackChicken);
 
-		ChickensRegistryItem pinkChicken = createDyeChicken(EnumDyeColor.PINK, "PinkChicken").setParentsNew(redChicken,
+		ChickensRegistryItem pinkChicken = createDyeChicken(DyeColor.PINK, "PinkChicken").setParentsNew(redChicken,
 				whiteChicken);
 		chickens.add(pinkChicken);
-		ChickensRegistryItem purpleChicken = createDyeChicken(EnumDyeColor.PURPLE, "PurpleChicken")
+		ChickensRegistryItem purpleChicken = createDyeChicken(DyeColor.PURPLE, "PurpleChicken")
 				.setParentsNew(blueChicken, redChicken);
 		chickens.add(purpleChicken);
-		chickens.add(createDyeChicken(EnumDyeColor.ORANGE, "OrangeChicken").setParentsNew(redChicken, yellowChicken));
+		chickens.add(createDyeChicken(DyeColor.ORANGE, "OrangeChicken").setParentsNew(redChicken, yellowChicken));
 		chickens.add(
-				createDyeChicken(EnumDyeColor.LIGHT_BLUE, "LightBlueChicken").setParentsNew(whiteChicken, blueChicken));
-		chickens.add(createDyeChicken(EnumDyeColor.LIME, "LimeChicken").setParentsNew(greenChicken, whiteChicken));
-		ChickensRegistryItem grayChicken = createDyeChicken(EnumDyeColor.GRAY, "GrayChicken")
+				createDyeChicken(DyeColor.LIGHT_BLUE, "LightBlueChicken").setParentsNew(whiteChicken, blueChicken));
+		chickens.add(createDyeChicken(DyeColor.LIME, "LimeChicken").setParentsNew(greenChicken, whiteChicken));
+		ChickensRegistryItem grayChicken = createDyeChicken(DyeColor.GRAY, "GrayChicken")
 				.setParentsNew(blackChicken, whiteChicken);
 		chickens.add(grayChicken);
-		chickens.add(createDyeChicken(EnumDyeColor.CYAN, "CyanChicken").setParentsNew(blueChicken, greenChicken));
+		chickens.add(createDyeChicken(DyeColor.CYAN, "CyanChicken").setParentsNew(blueChicken, greenChicken));
 
 		chickens.add(
-				createDyeChicken(EnumDyeColor.SILVER, "SilverDyeChicken").setParentsNew(grayChicken, whiteChicken));
+				createDyeChicken(DyeColor.SILVER, "SilverDyeChicken").setParentsNew(grayChicken, whiteChicken));
 		chickens.add(
-				createDyeChicken(EnumDyeColor.MAGENTA, "MagentaChicken").setParentsNew(purpleChicken, pinkChicken));
+				createDyeChicken(DyeColor.MAGENTA, "MagentaChicken").setParentsNew(purpleChicken, pinkChicken));
 
 		// base chickens
 		ChickensRegistryItem flintChicken = new ChickensRegistryItem(
@@ -485,7 +485,7 @@ public class ChickensMod {
 				0x262626, 0x000000, flintChicken, logChicken);
 		chickens.add(coalChicken);
 
-		ChickensRegistryItem brownChicken = createDyeChicken(EnumDyeColor.BROWN, "BrownChicken")
+		ChickensRegistryItem brownChicken = createDyeChicken(DyeColor.BROWN, "BrownChicken")
 				.setParentsNew(redChicken, greenChicken);
 		chickens.add(brownChicken);
 

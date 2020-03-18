@@ -10,13 +10,13 @@ import com.setycz.chickens.registry.ChickensRegistryItem;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +60,7 @@ public class ItemSpawnEgg extends Item implements IColorSource {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             ItemStack stack = playerIn.getHeldItem(hand);
             BlockPos correlatedPos = correctPosition(pos, facing);
@@ -69,10 +69,10 @@ public class ItemSpawnEgg extends Item implements IColorSource {
                 stack.shrink(1);
             }
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
-    private BlockPos correctPosition(BlockPos pos, EnumFacing side) {
+    private BlockPos correctPosition(BlockPos pos, Direction side) {
         final int[] offsetsXForSide = new int[]{0, 0, 0, 0, -1, 1};
         final int[] offsetsYForSide = new int[]{-1, 1, 0, 0, 0, 0};
         final int[] offsetsZForSide = new int[]{0, 0, -1, 1, 0, 0};
@@ -94,9 +94,9 @@ public class ItemSpawnEgg extends Item implements IColorSource {
         entity.onInitialSpawn(worldIn.getDifficultyForLocation(pos), null);
         entity.setChickenType(getTypeFromStack(stack));
 
-        NBTTagCompound stackNBT = stack.getTagCompound();
+        CompoundNBT stackNBT = stack.getTagCompound();
         if (stackNBT != null) {
-            NBTTagCompound entityNBT = entity.writeToNBT(new NBTTagCompound());
+            CompoundNBT entityNBT = entity.writeToNBT(new CompoundNBT());
             entityNBT.merge(stackNBT);
             entity.readEntityFromNBT(entityNBT);
         }
@@ -107,8 +107,8 @@ public class ItemSpawnEgg extends Item implements IColorSource {
     
     public static void applyEntityIdToItemStack(ItemStack stack, ResourceLocation entityId)
     {
-        NBTTagCompound nbttagcompound = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
-        NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+        CompoundNBT nbttagcompound = stack.hasTagCompound() ? stack.getTagCompound() : new CompoundNBT();
+        CompoundNBT nbttagcompound1 = new CompoundNBT();
         nbttagcompound1.setString("id", entityId.toString());
         nbttagcompound.setTag("ChickenType", nbttagcompound1);
         stack.setTagCompound(nbttagcompound);
@@ -122,12 +122,12 @@ public class ItemSpawnEgg extends Item implements IColorSource {
     @Nullable
     public static String getTypeFromStack(ItemStack stack)
     {
-    	NBTTagCompound nbttagcompound = stack.getTagCompound();
+    	CompoundNBT nbttagcompound = stack.getTagCompound();
 
     	if (nbttagcompound != null && nbttagcompound.hasKey("ChickenType", 10))
     	{
-    		new NBTTagCompound();
-    		NBTTagCompound chickentag = nbttagcompound.getCompoundTag("ChickenType");
+    		new CompoundNBT();
+    		CompoundNBT chickentag = nbttagcompound.getCompoundTag("ChickenType");
     		
     		return chickentag.getString("id");
     	}

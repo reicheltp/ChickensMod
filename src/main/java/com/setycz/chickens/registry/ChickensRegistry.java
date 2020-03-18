@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.handler.SpawnType;
 
-import net.minecraft.init.Biomes;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 

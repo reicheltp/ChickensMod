@@ -1,7 +1,7 @@
 package com.setycz.chickens.handler;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 
 /**

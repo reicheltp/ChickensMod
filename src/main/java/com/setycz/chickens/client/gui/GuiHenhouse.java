@@ -4,9 +4,9 @@ import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.block.TileEntityHenhouse;
 import com.setycz.chickens.client.gui.container.ContainerHenhouse;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,12 +16,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Created by setyc on 06.03.2016.
  */
 @SideOnly(Side.CLIENT)
-public class GuiHenhouse extends GuiContainer {
+public class GuiHenhouse extends ContainerScreen {
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(ChickensMod.MODID, "textures/gui/henhouse.png");
-    private final InventoryPlayer playerInv;
+    private final PlayerInventory playerInv;
     private final TileEntityHenhouse tileEntityHenhouse;
 
-    public GuiHenhouse(InventoryPlayer playerInv, TileEntityHenhouse tileEntityHenhouse) {
+    public GuiHenhouse(PlayerInventory playerInv, TileEntityHenhouse tileEntityHenhouse) {
         super(new ContainerHenhouse(playerInv, tileEntityHenhouse));
         this.playerInv = playerInv;
         this.tileEntityHenhouse = tileEntityHenhouse;

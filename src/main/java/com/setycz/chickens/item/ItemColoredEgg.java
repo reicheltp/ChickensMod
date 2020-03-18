@@ -9,15 +9,15 @@ import com.setycz.chickens.registry.ChickensRegistryItem;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemEgg;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.EggItem;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.translation.I18n;
@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Created by setyc on 13.02.2016.
  */
-public class ItemColoredEgg extends ItemEgg implements IColorSource {
+public class ItemColoredEgg extends EggItem implements IColorSource {
     public ItemColoredEgg() {
         setHasSubtypes(true);
     }
@@ -42,7 +42,7 @@ public class ItemColoredEgg extends ItemEgg implements IColorSource {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        EnumDyeColor color = EnumDyeColor.byDyeDamage(stack.getMetadata());
+        DyeColor color = DyeColor.byDyeDamage(stack.getMetadata());
         String unlocalizedName = color.getTranslationKey();
         // hotfix for compatibility with MoreChickens
         if (unlocalizedName.equals("silver")) {
@@ -66,11 +66,11 @@ public class ItemColoredEgg extends ItemEgg implements IColorSource {
 
     @Override
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        return EnumDyeColor.byDyeDamage(stack.getMetadata()).getColorValue();
+        return DyeColor.byDyeDamage(stack.getMetadata()).getColorValue();
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
         ItemStack itemStackIn = playerIn.getHeldItem(hand);
 
         if (!playerIn.capabilities.isCreativeMode) {
@@ -90,8 +90,8 @@ public class ItemColoredEgg extends ItemEgg implements IColorSource {
         }
 
         //noinspection ConstantConditions
-        playerIn.addStat(StatList.getObjectUseStats(this));
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
+        playerIn.addStat(Stats.getObjectUseStats(this));
+        return new ActionResult<ItemStack>(ActionResultType.SUCCESS, itemStackIn);
     }
 
     public String getChickenType(ItemStack itemStack) {

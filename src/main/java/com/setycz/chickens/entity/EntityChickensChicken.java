@@ -11,14 +11,14 @@ import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.init.Biomes;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -33,7 +33,7 @@ import net.minecraft.world.biome.Biome;
 /**
  * Created by setyc on 12.02.2016.
  */
-public class EntityChickensChicken extends EntityChicken {
+public class EntityChickensChicken extends ChickenEntity {
     //private static final DataParameter<Integer> CHICKEN_TYPE = EntityDataManager.createKey(EntityChickensChicken.class, DataSerializers.VARINT);
     private static final DataParameter<String>  CHICKEN_TYPE = EntityDataManager.createKey(EntityChickensChicken.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> CHICKEN_STATS_ANALYZED = EntityDataManager.createKey(EntityChickensChicken.class, DataSerializers.BOOLEAN);
@@ -115,7 +115,7 @@ public class EntityChickensChicken extends EntityChicken {
     }
 
     @Override
-    public EntityChicken createChild(EntityAgeable ageable) {
+    public ChickenEntity createChild(AgeableEntity ageable) {
         EntityChickensChicken mateChicken = (EntityChickensChicken) ageable;
 
         ChickensRegistryItem chickenDescription = getChickenDescription();
@@ -223,7 +223,7 @@ public class EntityChickensChicken extends EntityChicken {
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingData) {
+    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, @Nullable ILivingEntityData livingData) {
         livingData = super.onInitialSpawn(difficulty, livingData);
         if (livingData instanceof GroupData) {
             GroupData groupData = (GroupData) livingData;
@@ -252,7 +252,7 @@ public class EntityChickensChicken extends EntityChicken {
         return ChickensRegistry.getSpawnType(biome);
     }
 
-    private static class GroupData implements IEntityLivingData {
+    private static class GroupData implements ILivingEntityData {
         private final String type;
 
         public GroupData(String type) {
@@ -290,7 +290,7 @@ public class EntityChickensChicken extends EntityChicken {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound tagCompound) {
+    public void writeEntityToNBT(CompoundNBT tagCompound) {
         super.writeEntityToNBT(tagCompound);
         tagCompound.setString(TYPE_NBT, getChickenTypeInternal());
         tagCompound.setBoolean(CHICKEN_STATS_ANALYZED_NBT, getStatsAnalyzed());
@@ -300,7 +300,7 @@ public class EntityChickensChicken extends EntityChicken {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound tagCompound) {
+    public void readEntityFromNBT(CompoundNBT tagCompound) {
         super.readEntityFromNBT(tagCompound);
         setChickenTypeInternal(tagCompound.getString(TYPE_NBT));
         setStatsAnalyzed(tagCompound.getBoolean(CHICKEN_STATS_ANALYZED_NBT));
@@ -310,7 +310,7 @@ public class EntityChickensChicken extends EntityChicken {
         updateLayProgress();
     }
 
-    private int getStatusValue(NBTTagCompound compound, String statusName) {
+    private int getStatusValue(CompoundNBT compound, String statusName) {
         return compound.hasKey(statusName) ? compound.getInteger(statusName) : 1;
     }
 

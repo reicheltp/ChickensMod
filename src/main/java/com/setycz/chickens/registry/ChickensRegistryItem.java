@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.setycz.chickens.handler.ItemHolder;
 import com.setycz.chickens.handler.SpawnType;
 
-import net.minecraft.init.Items;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

@@ -2,7 +2,7 @@ package com.setycz.chickens.client.gui;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,7 +17,7 @@ public class TileEntityGuiHandler implements IGuiHandler {
 
     @Override
     @Nullable
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getServerGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         if (te instanceof IInventoryGui) {
             return ((IInventoryGui) te).createContainer(player.inventory);
@@ -28,7 +28,7 @@ public class TileEntityGuiHandler implements IGuiHandler {
     @Override
     @Nullable
     @SideOnly(Side.CLIENT)
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+    public Object getClientGuiElement(int ID, PlayerEntity player, World world, int x, int y, int z) {
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         if (te instanceof IInventoryGui) {
             return ((IInventoryGui) te).createGui(player.inventory);

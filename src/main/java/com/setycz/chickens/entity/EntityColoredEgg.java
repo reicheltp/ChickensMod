@@ -4,12 +4,12 @@ import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.Items;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Created by setyc on 13.02.2016.
  */
-public class EntityColoredEgg extends EntityThrowable {
+public class EntityColoredEgg extends ThrowableEntity {
     private static final DataParameter<String> CHICKEN_TYPE = EntityDataManager.createKey(EntityColoredEgg.class, DataSerializers.STRING);
     public static final String TYPE_NBT = "Type";
     
@@ -33,7 +33,7 @@ public class EntityColoredEgg extends EntityThrowable {
         super(worldIn);
     }
 
-    public EntityColoredEgg(World worldIn, EntityLivingBase throwerIn) {
+    public EntityColoredEgg(World worldIn, LivingEntity throwerIn) {
         super(worldIn, throwerIn);
     }
 
@@ -56,14 +56,14 @@ public class EntityColoredEgg extends EntityThrowable {
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
         super.writeToNBT(tagCompound);
         tagCompound.setString(TYPE_NBT, getChickenType());
         return tagCompound;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tagCompound) {
+    public void readFromNBT(CompoundNBT tagCompound) {
         super.readFromNBT(tagCompound);
         setChickenType(tagCompound.getString(TYPE_NBT));
     }

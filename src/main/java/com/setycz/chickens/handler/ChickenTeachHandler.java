@@ -4,8 +4,8 @@ import com.setycz.chickens.entity.EntityChickensChicken;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.init.Items;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -22,7 +22,7 @@ public class ChickenTeachHandler {
         if (item.isEmpty() || item.getItem() != Items.BOOK) {
             return;
         }
-        if (!(event.getTarget().getClass() == EntityChicken.class)) {
+        if (!(event.getTarget().getClass() == ChickenEntity.class)) {
             return;
         }
 
@@ -36,7 +36,7 @@ public class ChickenTeachHandler {
             return;
         }
 
-        EntityChicken chicken = (EntityChicken) event.getTarget();
+        ChickenEntity chicken = (ChickenEntity) event.getTarget();
         EntityChickensChicken smartChicken = convertToSmart(chicken, worldObj, smartChickenDescription);
 
         worldObj.removeEntity(chicken);
@@ -46,7 +46,7 @@ public class ChickenTeachHandler {
         event.setCanceled(true);
     }
 
-    private EntityChickensChicken convertToSmart(EntityChicken chicken, World worldObj, ChickensRegistryItem smartChickenDescription) {
+    private EntityChickensChicken convertToSmart(ChickenEntity chicken, World worldObj, ChickensRegistryItem smartChickenDescription) {
         EntityChickensChicken smartChicken = new EntityChickensChicken(worldObj);
         smartChicken.setPositionAndRotation(chicken.posX, chicken.posY, chicken.posZ, chicken.rotationYaw, chicken.rotationPitch);
         smartChicken.onInitialSpawn(worldObj.getDifficultyForLocation(chicken.getPosition()), null);
