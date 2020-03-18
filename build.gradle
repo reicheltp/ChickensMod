@@ -12,9 +12,9 @@ buildscript {
     }
 }
 
-plugins {
-	id "com.matthewprenger.cursegradle" version "1.0.7"
-}
+//plugins {
+//	id "com.matthewprenger.cursegradle" version "1.0.7"
+//}
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
@@ -83,16 +83,16 @@ processResources
     }
 }
 
-curseforge {
-	apiKey = project.hasProperty('curse_token') ? project.getProperty('curse_token') : ''
-	project {
-		id = project.hasProperty('curse_project_id') ? project.getProperty('curse_project_id') : ''
-		changelog = file('changelog.txt')
-		releaseType = project.releaseType
-		addGameVersion '1.12.2'
-		relations {
-			optionalLibrary 'hwyla'
-			optionalLibrary 'just-enough-items-jei'
-		}
-	}
-}
+//curseforge {
+//    apiKey = project.hasProperty('curse_token') ? project.getProperty('curse_token') : ''
+//    project {
+//        id = project.hasProperty('curse_project_id') ? project.getProperty('curse_project_id') : ''
+//        changelog = file('changelog.txt')
+//        releaseType = project.releaseType
+//        addGameVersion "${mcversion}"
+//        relations {
+//            optionalLibrary 'hwyla'
+//            optionalLibrary 'just-enough-items-jei'
+//        }
+//    }
+//}
