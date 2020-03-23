@@ -10,6 +10,7 @@ import com.setycz.chickens.registry.ChickensRegistryItem;
 
 import init.ModItemGroups;
 import init.ModItems;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
@@ -25,6 +26,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
@@ -59,17 +62,13 @@ public class ItemSpawnEgg extends Item implements IColorSource {
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack p_200295_1_) {
-        return super.getDisplayName(p_200295_1_);
-    }
-
-    @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public ITextComponent getDisplayName(ItemStack stack) {
         ChickensRegistryItem chickenDescription = ChickensRegistry.getByRegistryName(getTypeFromStack(stack));
-        if(chickenDescription == null) return "null";
-        return I18n.translateToLocal("entity." + chickenDescription.getEntityName() + ".name");
-    }
+        if(chickenDescription == null)
+            return null;
 
+        return TextComponentUtils.toTextComponent(() -> I18n.format("entity." + chickenDescription.getEntityName() + ".name"));
+    }
 
     @Override
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
