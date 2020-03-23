@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.capabilities.InventoryStroageModifiable;
 import com.setycz.chickens.client.gui.GuiHenhouse;
 import com.setycz.chickens.client.gui.IInventoryGui;
@@ -19,6 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -27,8 +29,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 /**
@@ -69,6 +69,10 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
     		};
     		
     private int energy = 0;
+
+    public TileEntityHenhouse() {
+        super();
+    }
 
     @Nullable
     public static ItemStack pushItemStack(ItemStack itemToLay, World worldObj, Vec3d pos) {

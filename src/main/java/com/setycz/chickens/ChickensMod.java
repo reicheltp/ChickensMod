@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.setycz.chickens.block.BlockHenhouse;
 import com.setycz.chickens.block.TileEntityHenhouse;
@@ -34,6 +35,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Items;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
@@ -46,6 +48,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -71,7 +74,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 /**
  * Created by setyc on 12.02.2016.
  */
-@Mod(modid = ChickensMod.MODID, name = ChickensMod.NAME, version = ChickensMod.VERSION, acceptedMinecraftVersions = "[1.12, 1.12.2]", dependencies = "required-after:forge@[14.21.1.2387,);")
+@Mod(ChickensMod.MODID)
 @EventBusSubscriber
 public class ChickensMod {
 	public static final String MODID = "chickens";
@@ -80,9 +83,6 @@ public class ChickensMod {
 	public static final String NAME = "Chickens";
 
 	public static final LogUtil log = new LogUtil(MODID);
-
-	@Mod.Instance(MODID)
-	public static ChickensMod instance;
 
     public static boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	
@@ -109,6 +109,15 @@ public class ChickensMod {
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse_jungle");
 	public static final Block henhouse_spruce = new BlockHenhouse().setTranslationKey("henhouse_spruce")
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse_spruce");
+
+	@SubscribeEvent
+	public static void onTileEntityRegistry(RegistryEvent.Register<TileEntityType<?>> event){
+		event.getRegistry().registerAll(
+				TileEntityType.Builder.create(
+						() -> new TileEntityHenhouse(), henhouse).build(null).setRegistryName(new ResourceLocation(MODID, "ritual_bowl")
+				)
+		);
+	}
 
 	public static final TileEntityGuiHandler guiHandler = new TileEntityGuiHandler();
 

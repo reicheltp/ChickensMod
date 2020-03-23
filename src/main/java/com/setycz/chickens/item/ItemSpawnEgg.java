@@ -8,10 +8,14 @@ import com.setycz.chickens.handler.IColorSource;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
+import init.ModItemGroups;
+import init.ModItems;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -20,28 +24,43 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 /**
  * Created by setyc on 12.02.2016.
  */
 @SuppressWarnings("deprecation")
 public class ItemSpawnEgg extends Item implements IColorSource {
+
     public ItemSpawnEgg() {
-        setHasSubtypes(true);
+        super(new Properties().group(ModItemGroups.Default));
+        setRegistryName(new ResourceLocation(ChickensMod.MODID, "spawn_egg"));
     }
-    
+
+    public static ItemStack from(ChickensRegistryItem chicken){
+        ItemStack chickenItemStack = new ItemStack(ModItems.ITEMSPAWNEGG);
+        applyEntityIdToItemStack(chickenItemStack, chicken.getRegistryName());
+        return chickenItemStack;
+    }
+
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-        if (this.isInCreativeTab(tab))
-        {
-        	for (ChickensRegistryItem chicken : ChickensRegistry.getItems()) {
-        		ItemStack itemstack = new ItemStack(this, 1);
-        		applyEntityIdToItemStack(itemstack, chicken.getRegistryName()); 
-        		subItems.add(itemstack);
-        	}
+    public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
+        if (!isInGroup(group)){
+            return;
         }
+
+        for (ChickensRegistryItem chicken : ChickensRegistry.getItems() ){
+            items.add(from(chicken));
+        }
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack p_200295_1_) {
+        return super.getDisplayName(p_200295_1_);
     }
 
     @Override

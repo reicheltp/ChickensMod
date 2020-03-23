@@ -104,7 +104,7 @@ public final class ChickensRegistry {
     }
 
     public static SpawnType getSpawnType(Biome biome) {
-        if (biome == Biomes.HELL) {
+        if (biome == Biomes.NETHER) {
             return SpawnType.HELL;
         }
 

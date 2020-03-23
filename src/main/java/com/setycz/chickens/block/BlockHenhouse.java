@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -61,8 +62,8 @@ public class BlockHenhouse extends ContainerBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(World world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer, Hand hand) {
-        return this.getDefaultState().with(FACING, placer.getHorizontalFacing().getOpposite());
+    public BlockState getStateForPlacement(BlockState state, Direction facing, BlockState state2, IWorld world, BlockPos pos1, BlockPos pos2, Hand hand) {
+        return this.getDefaultState().with(FACING, facing.getOpposite());
     }
 
     @Override

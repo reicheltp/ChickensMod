@@ -1,6 +1,7 @@
 package com.setycz.chickens.common;
 
 import com.setycz.chickens.ChickensMod;
+import com.setycz.chickens.block.TileEntityHenhouse;
 import com.setycz.chickens.entity.EntityColoredEgg;
 import com.setycz.chickens.item.ItemColoredEgg;
 import com.setycz.chickens.item.ItemLiquidEgg;
@@ -15,14 +16,19 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Created by setyc on 18.02.2016.
  */
 public class CommonProxy {
-	
+
 	public void preInit() {
 
 	}
