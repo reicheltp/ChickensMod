@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.setycz.chickens.entity.EntityChickensChicken;
 
+import init.ModItemGroups;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,11 +24,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemAnalyzer extends Item {
     public ItemAnalyzer() {
-        setMaxStackSize(1);
-        setMaxDamage(238);
+        super(new Properties().group(ModItemGroups.CHICKENS_TAB).maxStackSize(1).maxDamage(238));
+        setRegistryName("analyzer");
     }
 
-    
+    @Override
+    public String getTranslationKey() {
+        return "analyzer";
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack,  World worldIn, List<String> tooltip, ITooltipFlag flagIn) {

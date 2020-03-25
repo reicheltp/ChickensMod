@@ -2,6 +2,7 @@ package com.setycz.chickens.block;
 
 import java.util.List;
 
+import com.setycz.chickens.ChickensMod;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
@@ -34,9 +35,18 @@ import javax.annotation.Nullable;
 public class BlockHenhouse extends ContainerBlock {
     public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 
-    public BlockHenhouse() {
+    private final String _name;
+
+    public BlockHenhouse(String name) {
         super(Properties.create(Material.WOOD).hardnessAndResistance(2));
         this.getDefaultState().with(FACING, Direction.NORTH);
+        setRegistryName(new ResourceLocation(ChickensMod.MODID, name));
+        _name = name;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return _name;
     }
 
     @Override

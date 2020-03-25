@@ -2,24 +2,21 @@ package com.setycz.chickens.item;
 
 import java.util.List;
 
+import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.entity.EntityColoredEgg;
 import com.setycz.chickens.handler.IColorSource;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
+import init.ModItemGroups;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.EggItem;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,7 +27,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemColoredEgg extends EggItem implements IColorSource {
     public ItemColoredEgg() {
-        setHasSubtypes(true);
+        super(new Properties().group(ModItemGroups.CHICKENS_TAB));
+        setRegistryName(new ResourceLocation(ChickensMod.MODID, "colored_egg"));
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return "colored_egg";
     }
 
     @SideOnly(Side.CLIENT)

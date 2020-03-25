@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 public class ItemSpawnEgg extends Item implements IColorSource {
 
     public ItemSpawnEgg() {
-        super(new Properties().group(ModItemGroups.Default));
+        super(new Properties().group(ModItemGroups.CHICKENS_TAB));
         setRegistryName(new ResourceLocation(ChickensMod.MODID, "spawn_egg"));
     }
 
@@ -42,6 +42,11 @@ public class ItemSpawnEgg extends Item implements IColorSource {
         ItemStack chickenItemStack = new ItemStack(ModItems.ITEMSPAWNEGG);
         applyEntityIdToItemStack(chickenItemStack, chicken.getRegistryName());
         return chickenItemStack;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return "spawn_egg";
     }
 
     @Override

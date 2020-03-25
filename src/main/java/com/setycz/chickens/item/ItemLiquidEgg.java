@@ -4,11 +4,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.handler.IColorSource;
 import com.setycz.chickens.handler.LiquidEggFluidWrapper;
 import com.setycz.chickens.registry.LiquidEggRegistry;
 import com.setycz.chickens.registry.LiquidEggRegistryItem;
 
+import init.ModItemGroups;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -17,16 +19,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.EggItem;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Direction;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
@@ -40,7 +36,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemLiquidEgg extends EggItem implements IColorSource {
     public ItemLiquidEgg() {
-        setHasSubtypes(true);
+        super(new Properties().group(ModItemGroups.CHICKENS_TAB));
+        setRegistryName(new ResourceLocation(ChickensMod.MODID, "liquid_egg"));
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return "liquid_egg";
     }
 
     @SideOnly(Side.CLIENT)
