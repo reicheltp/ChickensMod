@@ -104,20 +104,6 @@ public class ChickensMod {
 
 	private static IForgeRegistry<Item> itemRegistry = null;
 
-	private static BlockItem getItemBlockForRegistry(Block block, ResourceLocation resourceLocation) {
-
-		BlockItem blockItem = new BlockItem(block, new Item.Properties().group(ModItemGroups.CHICKENS_TAB)){
-			@Override
-			public String getTranslationKey() {
-				return "name";
-			}
-		};
-
-		blockItem.setRegistryName(resourceLocation);
-
-		return blockItem;
-	}
-
 	private List<String> getChickenNames(Collection<ChickensRegistryItem> chickens) {
 		List<String> result = new ArrayList<String>();
 		for (ChickensRegistryItem chicken : chickens) {
@@ -217,18 +203,6 @@ public class ChickensMod {
 		}
 	}
 
-	private static void registerHenhouse(Block henhouse, BlockPlanks.EnumType type, IForgeRegistry<IRecipe> event) {
-		
-		ShapedOreRecipe recipe = new ShapedOreRecipe(new ResourceLocation("henhouse"), new ItemStack(Item.getItemFromBlock(henhouse)),
-				new Object[] { "PPP", "PHP", "PPP", 'P',
-						type == BlockPlanks.EnumType.OAK ? "plankWood"
-								: new ItemStack(Blocks.PLANKS, 1, type.getMetadata()),
-						'H', Blocks.HAY_BLOCK });
-
-		event.register(recipe.setRegistryName(ChickensMod.MODID, henhouse.getTranslationKey()));
-
-	}
-
 	@SubscribeEvent
 	public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
 		
@@ -240,13 +214,6 @@ public class ChickensMod {
 		for (LiquidEggRegistryItem liquidEgg : LiquidEggRegistry.getAll()) {
 			proxy.registerLiquidEgg(liquidEgg);
 		}
-
-		registerHenhouse(henhouse_acacia, BlockPlanks.EnumType.ACACIA, event.getRegistry());
-		registerHenhouse(henhouse_birch, BlockPlanks.EnumType.BIRCH, event.getRegistry());
-		registerHenhouse(henhouse_dark_oak, BlockPlanks.EnumType.DARK_OAK, event.getRegistry());
-		registerHenhouse(henhouse_jungle, BlockPlanks.EnumType.JUNGLE, event.getRegistry());
-		registerHenhouse(henhouse_spruce, BlockPlanks.EnumType.SPRUCE, event.getRegistry());
-		registerHenhouse(henhouse, BlockPlanks.EnumType.OAK, event.getRegistry());
 
 		event.getRegistry().register(
 				new ShapelessOreRecipe(new ResourceLocation("analyzer"), new ItemStack(ChickensMod.analyzer, 1),
