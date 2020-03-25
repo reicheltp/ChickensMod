@@ -1,15 +1,11 @@
 package com.setycz.chickens;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.setycz.chickens.block.BlockHenhouse;
 import com.setycz.chickens.block.TileEntityHenhouse;
 import com.setycz.chickens.client.gui.TileEntityGuiHandler;
-import com.setycz.chickens.common.CommonProxy;
 import com.setycz.chickens.common.LogUtil;
 import com.setycz.chickens.config.ConfigHandler;
 import com.setycz.chickens.entity.EntityChickensChicken;
@@ -17,57 +13,36 @@ import com.setycz.chickens.entity.EntityColoredEgg;
 import com.setycz.chickens.handler.ChickenNetherPopulateHandler;
 import com.setycz.chickens.handler.ChickenTeachHandler;
 import com.setycz.chickens.handler.SpawnType;
-import com.setycz.chickens.item.ItemAnalyzer;
-import com.setycz.chickens.item.ItemColoredEgg;
-import com.setycz.chickens.item.ItemLiquidEgg;
-import com.setycz.chickens.item.ItemSpawnEgg;
+import com.setycz.chickens.proxy.ClientProxy;
+import com.setycz.chickens.proxy.CommonProxy;
+import com.setycz.chickens.proxy.ServerProxy;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 import com.setycz.chickens.registry.LiquidEggRegistry;
 import com.setycz.chickens.registry.LiquidEggRegistryItem;
 
-import init.ModItemGroups;
 import joptsimple.internal.Strings;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPlanks;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
@@ -83,68 +58,19 @@ public class ChickensMod {
 
 	public static final LogUtil log = new LogUtil(MODID);
 
-    public static boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+	//TODO
+    //public static boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+	public static boolean isDev = false;
 
-	public static final Item spawnEgg = new ItemSpawnEgg();
-	public static final Item coloredEgg = new ItemColoredEgg();
-	public static final Item liquidEgg = new ItemLiquidEgg();
-	public static final Item analyzer = new ItemAnalyzer();
+	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
-	public static final Block henhouse = new BlockHenhouse("henhouse");
-	public static final Block henhouse_acacia = new BlockHenhouse("henhouse_acacia");
-	public static final Block henhouse_birch = new BlockHenhouse("henhouse_birch");
-	public static final Block henhouse_dark_oak = new BlockHenhouse("henhouse_dark_oak");
-	public static final Block henhouse_jungle = new BlockHenhouse("henhouse_jungle");
-	public static final Block henhouse_spruce = new BlockHenhouse("henhouse_spruce");
-
-	@SubscribeEvent
-	public void registerBlocks(RegistryEvent.Register<Block> event) {
-		event.getRegistry().registerAll(
-				henhouse,
-				henhouse_acacia,
-				henhouse_birch,
-				henhouse_dark_oak,
-				henhouse_jungle,
-				henhouse_spruce
-		);
-	}
-
-	@SubscribeEvent
-	public void registerItems(RegistryEvent.Register<Item> event) {
-		event.getRegistry().registerAll(
-				coloredEgg,
-				spawnEgg,
-				liquidEgg,
-				analyzer,
-				getItemBlockForRegistry(henhouse, henhouse.getRegistryName()),
-				getItemBlockForRegistry(henhouse_acacia, henhouse_acacia.getRegistryName()),
-				getItemBlockForRegistry(henhouse_birch, henhouse_birch.getRegistryName()),
-				getItemBlockForRegistry(henhouse_dark_oak, henhouse_dark_oak.getRegistryName()),
-				getItemBlockForRegistry(henhouse_jungle, henhouse_jungle.getRegistryName()),
-				getItemBlockForRegistry(henhouse_spruce, henhouse_spruce.getRegistryName())
-		);
-	}
-
-	@SubscribeEvent
-	public static void onTileEntityRegistry(RegistryEvent.Register<TileEntityType<?>> event){
-		event.getRegistry().registerAll(
-				TileEntityType.Builder.create(
-						() -> new TileEntityHenhouse(), henhouse).build(null).setRegistryName(new ResourceLocation(MODID, "ritual_bowl")
-				)
-		);
+	public ChickensMod(){
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 	}
 
 	public static final TileEntityGuiHandler guiHandler = new TileEntityGuiHandler();
 
-	@SidedProxy(clientSide = "com.setycz.chickens.client.ClientProxy", serverSide = "com.setycz.chickens.common.CommonProxy")
-	public static CommonProxy proxy;
-
-	public boolean getAlwaysShowStats() {
-		return ConfigHandler.alwaysShowStats;
-	}
-
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
+	public void preInit(FMLCommonSetupEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, guiHandler);
 
 		EntityRegistry.registerModEntity(new ResourceLocation(ChickensMod.MODID, CHICKEN), EntityChickensChicken.class,
