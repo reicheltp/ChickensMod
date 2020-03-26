@@ -29,6 +29,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import static com.setycz.chickens.item.utils.NbtUtils.getChickenRegistryNameFromStack;
+
 /**
  * Created by setyc on 13.02.2016.
  */
@@ -52,6 +54,13 @@ public class ItemColoredEgg extends EggItem implements IColorSource {
 
     @Override
     public ITextComponent getDisplayName(ItemStack stack) {
+
+        ChickensRegistryItem chickenRegistryItem = ChickensRegistry.getByRegistryName(getChickenRegistryNameFromStack(stack));
+        if (chickenRegistryItem == null)
+            return null;
+
+        chickenRegistryItem.getLayItemHolder().getStack()
+
         DyeColor color = DyeColor.byDyeDamage(stack.getMetadata());
 
         String unlocalizedName = color.getTranslationKey();
