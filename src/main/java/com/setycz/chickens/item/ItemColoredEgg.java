@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.entity.EntityColoredEgg;
+import com.setycz.chickens.item.utils.NbtUtils;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
@@ -15,7 +16,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentUtils;
@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import static com.setycz.chickens.item.utils.NbtUtils.applyChickenRegistryNameToItemStackNbt;
 import static com.setycz.chickens.item.utils.NbtUtils.getChickenRegistryNameFromStack;
 
 /**
@@ -34,6 +35,13 @@ public class ItemColoredEgg extends EggItem {
     public ItemColoredEgg() {
         super(new Properties().group(ModItemGroups.CHICKENS_TAB));
         setRegistryName(new ResourceLocation(ChickensMod.MODID, "colored_egg"));
+    }
+
+    public static ItemStack from(ChickensRegistryItem chicken) {
+        ItemStack itemStack = new ItemStack(ModItems.COLOREDEGG);
+        applyChickenRegistryNameToItemStackNbt(itemStack, chicken.getRegistryName());
+
+        return itemStack;
     }
 
     @Override
@@ -73,13 +81,13 @@ public class ItemColoredEgg extends EggItem {
 
     @Override
     public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> itemStacks) {
-        super.fillItemGroup(itemGroup, itemStacks);
+        if (!isInGroup(group)){
+            return;
+        }
 
         for (ChickensRegistryItem chicken : ChickensRegistry.getItems()) {
             if (chicken.isDye()) {
-                ItemStack itemStack = new ItemStack(ModItems.COLOREDEGG);
-                applyEntityIdToItemStack(itemStack, chicken.getRegistryName());
-                itemStacks.add(itemStack);
+                itemStacks.add(from(chicken));
             }
         }
     }
@@ -109,19 +117,11 @@ public class ItemColoredEgg extends EggItem {
     }
 
     public String getChickenType(ItemStack itemStack) {
-        ChickensRegistryItem chicken = ChickensRegistry.findDyeChicken(itemStack.getMetadata());
+
+        ChickensRegistryItem chicken = ChickensRegistry.getByRegistryName(NbtUtils.getChickenRegistryNameFromStack(itemStack));
         if (chicken == null) {
             return null;
         }
         return chicken.getRegistryName().toString();
-    }
-
-    public static void applyEntityIdToItemStack(ItemStack stack, ResourceLocation entityId)
-    {
-        CompoundNBT nbttagcompound = stack.hasTag() ? stack.getTag() : new CompoundNBT();
-        CompoundNBT nbttagcompound1 = new CompoundNBT();
-        nbttagcompound1.putString("id", entityId.toString());
-        nbttagcompound.put("ChickenType", nbttagcompound1);
-        stack.setTag(nbttagcompound);
     }
 }

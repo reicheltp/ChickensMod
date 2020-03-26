@@ -1,37 +1,49 @@
 package com.setycz.chickens.registry;
 
+import com.setycz.chickens.ChickensMod;
 import net.minecraft.block.Block;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by setyc on 14.02.2016.
  */
 public class LiquidEggRegistryItem {
-    private final int id;
-    private final Block liquid;
-    private final int eggColor;
-    private final Fluid fluid;
+    private final String NAME;
+    private final ResourceLocation RESOURCELOCATION;
+    private final Block LIQUID;
+    private final int EGGCOLOR;
+    private final Fluid FLUID;
 
-    public LiquidEggRegistryItem(int id, Block liquid, int eggColor, Fluid fluid) {
-        this.id = id;
-        this.liquid = liquid;
-        this.eggColor = eggColor;
-        this.fluid = fluid;
+    public LiquidEggRegistryItem(String name, Block liquid, int eggColor, Fluid fluid) {
+        this.NAME = name;
+        this.LIQUID = liquid;
+        this.EGGCOLOR = eggColor;
+        this.FLUID = fluid;
+        this.RESOURCELOCATION = new ResourceLocation(ChickensMod.MODID, name);
     }
 
-    public int getId() {
-        return id;
+    public String getRegistryName(){
+        return RESOURCELOCATION.toString();
+    }
+
+    public String getNAME(){
+        return NAME;
+    }
+
+    public ResourceLocation getResourceLocation(){
+        return RESOURCELOCATION;
     }
 
     public Block getLiquid() {
-        return liquid;
+        return LIQUID;
     }
 
     public int getEggColor() {
-        return eggColor;
+        return EGGCOLOR;
     }
 
     public Fluid getFluid() {
-        return fluid;
+        return FLUID;
     }
 }

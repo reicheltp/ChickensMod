@@ -25,6 +25,7 @@ import init.ModItems;
 import joptsimple.internal.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Items;
 import net.minecraft.world.biome.Biomes;
@@ -247,8 +248,8 @@ public class ChickensMod {
 	}
 
 	private void registerLiquidEggs() {
-		LiquidEggRegistry.register(new LiquidEggRegistryItem(0, Blocks.WATER, 0x0000ff, FluidRegistry.WATER));
-		LiquidEggRegistry.register(new LiquidEggRegistryItem(1, Blocks.LAVA, 0xff0000, FluidRegistry.LAVA));
+		LiquidEggRegistry.register(new LiquidEggRegistryItem("water", Blocks.WATER, 0x0000ff, Fluids.WATER));
+		LiquidEggRegistry.register(new LiquidEggRegistryItem("lava", Blocks.LAVA, 0xff0000, Fluids.LAVA));
 	}
 
 	ChickensRegistryItem createDyeChicken(DyeColor color, String name) {

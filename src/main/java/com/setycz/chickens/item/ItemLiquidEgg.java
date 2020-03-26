@@ -10,20 +10,31 @@ import com.setycz.chickens.registry.LiquidEggRegistry;
 import com.setycz.chickens.registry.LiquidEggRegistryItem;
 
 import init.ModItemGroups;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import init.ModItems;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.EggItem;
-import net.minecraft.stats.Stats;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
+import static com.setycz.chickens.item.utils.NbtUtils.applyLiquidRegistryNameToItemStackNbt;
+import static com.setycz.chickens.item.utils.NbtUtils.getLiquidRegistryNameFromStack;
 
 /**
  * Created by setyc on 14.02.2016.
@@ -34,60 +45,67 @@ public class ItemLiquidEgg extends EggItem {
         setRegistryName(new ResourceLocation(ChickensMod.MODID, "liquid_egg"));
     }
 
+    public static ItemStack from(LiquidEggRegistryItem liquid) {
+        ItemStack itemStack = new ItemStack(ModItems.LIQUIDEGG);
+        applyLiquidRegistryNameToItemStackNbt(itemStack, liquid.getResourceLocation());
+        return itemStack;
+    }
+
     @Override
     public String getTranslationKey() {
         return "liquid_egg";
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack,  World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(I18n.translateToLocal("item.liquid_egg.tooltip"));
+        tooltip.add(TextComponentUtils.toTextComponent(() -> I18n.format("item.liquid_egg.tooltip")));
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-        if (this.isInCreativeTab(tab))
-        {
-        	for (LiquidEggRegistryItem liquid : LiquidEggRegistry.getAll()) {
-        		subItems.add(new ItemStack(this, 1, liquid.getId()));
-        	}
+    public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> itemStacks) {
+        if (!isInGroup(group)){
+            return;
         }
-        
+
+        for (LiquidEggRegistryItem liquid : LiquidEggRegistry.getAll()) {
+            itemStacks.add(from(liquid));
+        }
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
-        Block liquid = LiquidEggRegistry.findById(stack.getMetadata()).getLiquid();
-        return I18n.translateToLocal(getTranslationKey() + "." + liquid.getTranslationKey().substring(5) + ".name");
+    public ITextComponent getDisplayName(ItemStack stack) {
+        String registryName = getLiquidRegistryNameFromStack(stack);
+        Block liquid = LiquidEggRegistry.getByRegistryName(registryName).getLiquid();
+
+        return TextComponentUtils.toTextComponent(() ->I18n.format(getTranslationKey() + "." + liquid.getTranslationKey().substring(5) + ".name"));
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
         ItemStack itemStackIn = playerIn.getHeldItem(hand);
-        RayTraceResult raytraceresult = this.rayTrace(worldIn, playerIn, false);
+        RayTraceResult raytraceresult = this.rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.NONE);
 
-        //noinspection ConstantConditions
         if (raytraceresult == null) {
             return new ActionResult<ItemStack>(ActionResultType.PASS, itemStackIn);
-        } else if (raytraceresult.typeOfHit != RayTraceResult.Type.BLOCK) {
+        } else if (!(raytraceresult instanceof BlockRayTraceResult)) {
             return new ActionResult<ItemStack>(ActionResultType.PASS, itemStackIn);
         } else {
-            BlockPos blockpos = raytraceresult.getBlockPos();
+            BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) raytraceresult;
+            BlockPos blockpos = blockRayTraceResult.getPos();
             if (!worldIn.isBlockModifiable(playerIn, blockpos)) {
                 return new ActionResult<ItemStack>(ActionResultType.FAIL, itemStackIn);
             } else {
-                boolean flag1 = worldIn.getBlockState(blockpos).getBlock().isReplaceable(worldIn, blockpos);
-                BlockPos blockPos1 = flag1 && raytraceresult.sideHit == Direction.UP ? blockpos : blockpos.offset(raytraceresult.sideHit);
+                boolean isBlockHitEditable = !playerIn.canPlayerEdit(blockpos, blockRayTraceResult.getFace(), itemStackIn);
+                BlockPos blockPos1 = isBlockHitEditable && blockRayTraceResult.getFace() == Direction.UP ? blockpos : blockpos.offset(blockRayTraceResult.getFace());
 
-                Block liquid = LiquidEggRegistry.findById(itemStackIn.getMetadata()).getLiquid();
-                if (!playerIn.canPlayerEdit(blockPos1, raytraceresult.sideHit, itemStackIn)) {
+                Block liquid = LiquidEggRegistry.getByRegistryName(getLiquidRegistryNameFromStack(itemStackIn)).getLiquid();
+
+                if (!playerIn.canPlayerEdit(blockPos1, blockRayTraceResult.getFace(), itemStackIn)) {
                     return new ActionResult<ItemStack>(ActionResultType.FAIL, itemStackIn);
                 } else if (this.tryPlaceContainedLiquid(playerIn, worldIn, blockPos1, liquid)) {
-                    //noinspection ConstantConditions
-                    playerIn.addStat(Stats.getObjectUseStats(this));
-                    return !playerIn.capabilities.isCreativeMode ? new ActionResult<ItemStack>(ActionResultType.SUCCESS, new ItemStack(itemStackIn.getItem(), itemStackIn.getCount() - 1, itemStackIn.getMetadata())) : new ActionResult<ItemStack>(ActionResultType.SUCCESS, itemStackIn);
+                    return !playerIn.isCreative() ? new ActionResult<ItemStack>(ActionResultType.SUCCESS, new ItemStack(itemStackIn.getItem(), itemStackIn.getCount() - 1)) : new ActionResult<ItemStack>(ActionResultType.SUCCESS, itemStackIn);
                 } else {
                     return new ActionResult<ItemStack>(ActionResultType.FAIL, itemStackIn);
                 }
@@ -102,14 +120,13 @@ public class ItemLiquidEgg extends EggItem {
         if (!worldIn.isAirBlock(pos) && !flag) {
             return false;
         } else {
-            if (worldIn.provider.doesWaterVaporize() && liquid == Blocks.FLOWING_WATER) {
+            if (worldIn.dimension.doesWaterVaporize() && liquid == Blocks.WATER) {
                 int i = pos.getX();
                 int j = pos.getY();
                 int k = pos.getZ();
                 worldIn.playSound(playerIn, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.8F);
-
                 for (int l = 0; l < 8; ++l) {
-                    worldIn.spawnParticle(EnumParticleTypes.SMOKE_LARGE, (double) i + Math.random(), (double) j + Math.random(), (double) k + Math.random(), 0.0D, 0.0D, 0.0D);
+                    worldIn.addParticle(ParticleTypes.LARGE_SMOKE, (double) i + Math.random(), (double) j + Math.random(), (double) k + Math.random(), 0.0D, 0.0D, 0.0D);
                 }
             } else {
                 if (!worldIn.isRemote && flag && !material.isLiquid()) {

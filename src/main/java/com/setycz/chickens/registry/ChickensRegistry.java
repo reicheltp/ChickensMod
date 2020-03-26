@@ -21,7 +21,7 @@ import net.minecraft.world.biome.Biome;
  */
 public final class ChickensRegistry {
     
-	private static final Map<ResourceLocation, ChickensRegistryItem> items = new HashMap<ResourceLocation, ChickensRegistryItem>();
+	private static final Map<ResourceLocation, ChickensRegistryItem> ITEMS = new HashMap<ResourceLocation, ChickensRegistryItem>();
     private static final Map<String, ChickensRegistryItem> STRING_TO_ITEM = new HashMap<String, ChickensRegistryItem>();
     
     public static final ResourceLocation SMART_CHICKEN_ID = new ResourceLocation(ChickensMod.MODID ,"SmartChicken");
@@ -29,12 +29,12 @@ public final class ChickensRegistry {
 
     public static void register(ChickensRegistryItem entity) {
         validate(entity);
-        items.put(entity.getRegistryName(), entity);
+        ITEMS.put(entity.getRegistryName(), entity);
         STRING_TO_ITEM.put(entity.getRegistryName().toString(), entity);
     }
 
     private static void validate(ChickensRegistryItem entity) {
-        for (ChickensRegistryItem item : items.values()) {
+        for (ChickensRegistryItem item : ITEMS.values()) {
             if (entity.getRegistryName().toString().compareToIgnoreCase(item.getRegistryName().toString()) == 0) {
                 throw new RuntimeException("Duplicated ID [" + entity.getRegistryName().toString() + "] of [" + entity.getEntityName() + "] with [" + item.getRegistryName().toString() + "] of [" + item.getEntityName() + "]!");
             }
@@ -47,8 +47,8 @@ public final class ChickensRegistry {
     
     @Nullable
     public static ChickensRegistryItem getByResourceLocation(ResourceLocation type) {
-    	ChickensRegistryItem chicken = items.get(type);
-        return chicken != null ? items.get(type) : getByRegistryName(type.toString());
+    	ChickensRegistryItem chicken = ITEMS.get(type);
+        return chicken != null ? ITEMS.get(type) : getByRegistryName(type.toString());
     }
     
     @Nullable
@@ -59,7 +59,7 @@ public final class ChickensRegistry {
 
     public static Collection<ChickensRegistryItem> getItems() {
         List<ChickensRegistryItem> result = new ArrayList<ChickensRegistryItem>();
-        for (ChickensRegistryItem chicken : items.values()) {
+        for (ChickensRegistryItem chicken : ITEMS.values()) {
             if (chicken.isEnabled()) {
                 result.add(chicken);
             }
@@ -75,7 +75,7 @@ public final class ChickensRegistry {
         if (parent2.isEnabled()) {
             result.add(parent2);
         }
-        for (ChickensRegistryItem item : items.values()) {
+        for (ChickensRegistryItem item : ITEMS.values()) {
             if (item.isEnabled() && item.isChildOf(parent1, parent2)) {
                 result.add(item);
             }
@@ -85,7 +85,7 @@ public final class ChickensRegistry {
 
     @Nullable
     public static ChickensRegistryItem findDyeChicken(int dyeMetadata) {
-        for (ChickensRegistryItem chicken : items.values()) {
+        for (ChickensRegistryItem chicken : ITEMS.values()) {
             if (chicken.isDye(dyeMetadata)) {
                 return chicken;
             }
@@ -95,7 +95,7 @@ public final class ChickensRegistry {
 
     public static List<ChickensRegistryItem> getPossibleChickensToSpawn(SpawnType spawnType) {
         List<ChickensRegistryItem> result = new ArrayList<ChickensRegistryItem>();
-        for (ChickensRegistryItem chicken : items.values()) {
+        for (ChickensRegistryItem chicken : ITEMS.values()) {
             if (chicken.canSpawn() && chicken.getSpawnType() == spawnType && chicken.isEnabled()) {
                 result.add(chicken);
             }
@@ -173,7 +173,7 @@ public final class ChickensRegistry {
     }
 
     public static boolean isAnyIn(SpawnType spawnType) {
-        for (ChickensRegistryItem chicken : items.values()) {
+        for (ChickensRegistryItem chicken : ITEMS.values()) {
             if (chicken.canSpawn() && chicken.isEnabled() && chicken.getSpawnType() == spawnType) {
                 return true;
             }
@@ -183,12 +183,12 @@ public final class ChickensRegistry {
 
     @Nullable
     public static ChickensRegistryItem getSmartChicken() {
-        return items.get(SMART_CHICKEN_ID);
+        return ITEMS.get(SMART_CHICKEN_ID);
     }
 
     public static Collection<ChickensRegistryItem> getDisabledItems() {
         List<ChickensRegistryItem> result = new ArrayList<ChickensRegistryItem>();
-        for (ChickensRegistryItem chicken : items.values()) {
+        for (ChickensRegistryItem chicken : ITEMS.values()) {
             if (!chicken.isEnabled()) {
                 result.add(chicken);
             }
