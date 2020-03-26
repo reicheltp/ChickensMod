@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.setycz.chickens.ChickensMod;
 
 import net.minecraft.item.Items;
@@ -14,14 +15,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 
 public class ItemHolder
 {
 	private String source = null;
 	
-	private String itemID;
-	private int metaID;
+	private int itemID;
 	private CompoundNBT nbtData;
 	private JsonObject nbtRawJson;
 	
@@ -31,36 +30,32 @@ public class ItemHolder
 	
 	private int stackSize = 1;
 	
-	public static HashMap<String, Integer> ErroredItems = new HashMap<String, Integer>();
+	public static HashMap<Integer, Integer> ErroredItems = new HashMap<Integer, Integer>();
 	
 	Gson gson = new Gson();
 	
 	public ItemHolder(){
-		itemID = Items.AIR.getRegistryName().toString();
-		metaID = 0;
+		itemID = Item.getIdFromItem(Items.AIR);
 		nbtData = null;
 		stack = ItemStack.EMPTY;
 	}
 	
 	public ItemHolder(Item itemIn) {
-		itemID = itemIn.getRegistryName().toString();
-		metaID = 0;
+		itemID = Item.getIdFromItem(itemIn);
 		nbtData = null;
 		stack = ItemStack.EMPTY;
 	}
 	
 	public ItemHolder(ItemStack stackIn, boolean isFinal){
-		itemID = stackIn.getItem().getRegistryName().toString();
-		metaID = stackIn.getMetadata();
+		itemID = Item.getIdFromItem(stackIn.getItem());
 		stack = stackIn;
-		nbtData = stackIn.hasTagCompound() ?  stackIn.getTagCompound() : null;
+		nbtData = stackIn.hasTag() ?  stackIn.getTag() : null;
 		stackSize = stackIn.getCount();
 		isComplete = isFinal;
 	}
 	
-	public ItemHolder(String itemID, int metaID, int qty) {
+	public ItemHolder(int itemID, int metaID, int qty) {
 		this.itemID = itemID;
-		this.metaID = metaID;
 		this.nbtData = null;
 	}
 	
@@ -79,15 +74,11 @@ public class ItemHolder
 
 	@Nullable
 	public Item getItem() {
-		return Item.getByNameOrId(this.itemID);
+		return Item.getItemById(this.itemID);
 	}
 	
 	public int getStackSize() {
 		return !this.stack.isEmpty() ? this.stack.getCount() : this.stackSize;
-	}
-	
-	public int getMeta() {
-		return this.metaID;
 	}
 	
 	public int getAmount() {
@@ -99,16 +90,14 @@ public class ItemHolder
 	 * @return
 	 */
 	public ItemStack getStack() {
-		
-		
 		if(!isComplete) {
 			
 			Item item = getItem();
 			if(item != null) 
 			{
-				stack = new ItemStack(getItem(), this.getAmount(), this.metaID);
+				stack = new ItemStack(getItem(), this.getAmount());
 				if(this.nbtData != null && !this.nbtData.isEmpty())
-	                	stack.setTagCompound(this.nbtData);
+	                	stack.setTag(this.nbtData);
 				
 				isComplete = true;
 			}else {
@@ -116,7 +105,6 @@ public class ItemHolder
 			}
 		}
 
-		//System.out.println("Getting: "+ stack.getDisplayName());
 		return stack.copy();
 	}
 	
@@ -135,15 +123,14 @@ public class ItemHolder
 	}
 	
 	public ItemHolder readJsonObject(JsonObject data) throws NumberFormatException {
-		itemID =  data.has("itemID") ? data.get("itemID").getAsString() : Items.AIR.getRegistryName().toString();
-		metaID =  data.has("metaID") ? data.get("metaID").getAsInt() : 0;
+		itemID =  data.has("itemID") ? data.get("itemID").getAsInt() : Item.getIdFromItem(Items.AIR);
 		stackSize = data.has("qty") ? data.get("qty").getAsInt() : 1;
 		
 		nbtRawJson =  data.has("nbt")  ? data.get("nbt").getAsJsonObject() : null; 
 			
 		try {
 			nbtData = data.has("nbt")  ? JsonToNBT.getTagFromJson(data.get("nbt").getAsJsonObject().toString()) : null;
-		} catch (NBTException e) {
+		} catch (CommandSyntaxException e) {
 			e.printStackTrace();
 			nbtData = null;
 		}
@@ -153,8 +140,7 @@ public class ItemHolder
 	
 	public JsonObject writeJsonObject(JsonObject data) throws NumberFormatException {
 		data.addProperty("itemID", itemID);
-		data.addProperty("metaID", metaID);
-		
+
 		if(stackSize > 1)
 			data.addProperty("qty", getStackSize());
 		
@@ -168,6 +154,6 @@ public class ItemHolder
 	
 	@Override
 	public String toString() {
-		return this.itemID +":"+this.metaID+":"+this.stackSize+(this.nbtData != null ? ":"+this.nbtData.toString() : "") ;
+		return this.itemID + ":" + this.stackSize + (this.nbtData != null ? ":" + this.nbtData.toString() : "") ;
 	}
 }
