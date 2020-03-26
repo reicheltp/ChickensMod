@@ -10,12 +10,15 @@ import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
 import init.ModItemGroups;
+import init.ModItems;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.EggItem;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -59,15 +62,15 @@ public class ItemColoredEgg extends EggItem implements IColorSource {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-    	
-        if (this.isInCreativeTab(tab))
-        {
-        	for (ChickensRegistryItem chicken : ChickensRegistry.getItems()) {
-        		if (chicken.isDye()) {
-        			subItems.add(new ItemStack(this, 1, chicken.getDyeMetadata()));
-        		}
-        	}
+    public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> itemStacks) {
+        super.fillItemGroup(itemGroup, itemStacks);
+
+        for (ChickensRegistryItem chicken : ChickensRegistry.getItems()) {
+            if (chicken.isDye()) {
+                ItemStack itemStack = new ItemStack(ModItems.COLOREDEGG);
+                applyEntityIdToItemStack(itemStack, chicken.getRegistryName());
+                itemStacks.add(itemStack);
+            }
         }
     }
 
@@ -106,5 +109,14 @@ public class ItemColoredEgg extends EggItem implements IColorSource {
             return null;
         }
         return chicken.getRegistryName().toString();
+    }
+
+    public static void applyEntityIdToItemStack(ItemStack stack, ResourceLocation entityId)
+    {
+        CompoundNBT nbttagcompound = stack.hasTag() ? stack.getTag() : new CompoundNBT();
+        CompoundNBT nbttagcompound1 = new CompoundNBT();
+        nbttagcompound1.putString("id", entityId.toString());
+        nbttagcompound.put("ChickenType", nbttagcompound1);
+        stack.setTag(nbttagcompound);
     }
 }

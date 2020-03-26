@@ -126,7 +126,7 @@ public class ChickensRegistryItem {
     }
 
     public boolean isDye() {
-        return layItem.getItem() == Items.DYE;
+        return layItem.getItem().getTags().contains(new ResourceLocation("forge", "dyes"));
     }
 
     public boolean isDye(int dyeMetadata) {
