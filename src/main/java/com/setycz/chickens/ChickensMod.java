@@ -21,6 +21,7 @@ import com.setycz.chickens.registry.ChickensRegistryItem;
 import com.setycz.chickens.registry.LiquidEggRegistry;
 import com.setycz.chickens.registry.LiquidEggRegistryItem;
 
+import init.ModItems;
 import joptsimple.internal.Strings;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityClassification;
@@ -394,13 +395,13 @@ public class ChickensMod {
 
 		ChickensRegistryItem waterChicken = new ChickensRegistryItem(
 				new ResourceLocation(ChickensMod.MODID, "WaterChicken"), "WaterChicken",
-				new ResourceLocation("chickens", "textures/entity/water_chicken.png"), new ItemStack(liquidEgg),
+				new ResourceLocation("chickens", "textures/entity/water_chicken.png"), new ItemStack(ModItems.LIQUIDEGG),
 				0x000099, 0x8080ff, gunpowderChicken, snowballChicken);
 		chickens.add(waterChicken);
 
 		ChickensRegistryItem lavaChicken = new ChickensRegistryItem(
 				new ResourceLocation(ChickensMod.MODID, "LavaChicken"), "LavaChicken",
-				new ResourceLocation("chickens", "textures/entity/lava_chicken.png"), new ItemStack(liquidEgg),
+				new ResourceLocation("chickens", "textures/entity/lava_chicken.png"), new ItemStack(ModItems.LIQUIDEGG),
 				0xcc3300, 0xffff00, coalChicken, quartzChicken).setSpawnType(SpawnType.HELL);
 		chickens.add(lavaChicken);
 

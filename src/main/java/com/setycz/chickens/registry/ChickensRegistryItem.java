@@ -5,8 +5,7 @@ import javax.annotation.Nullable;
 import com.setycz.chickens.handler.ItemHolder;
 import com.setycz.chickens.handler.SpawnType;
 
-import net.minecraft.item.Items;
-import net.minecraft.item.Item;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -130,7 +129,7 @@ public class ChickensRegistryItem {
     }
 
     public boolean isDye(int dyeMetadata) {
-        return layItem.getItem() == Items.DYE && layItem.getMeta() == dyeMetadata;
+        return layItem.getItem() instanceof DyeItem && layItem.getMeta() == dyeMetadata;
     }
 
     public int getDyeMetadata() {
@@ -203,11 +202,5 @@ public class ChickensRegistryItem {
 
     public boolean isBreedable() {
         return parent1 != null && parent2 != null;
-    }
-    
-    
-    public static void registerChickens()
-    {
-    Item.getByNameOrId("");	
     }
 }

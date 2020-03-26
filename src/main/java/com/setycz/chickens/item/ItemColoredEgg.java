@@ -5,7 +5,6 @@ import java.util.Random;
 
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.entity.EntityColoredEgg;
-import com.setycz.chickens.handler.IColorSource;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
@@ -15,12 +14,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.EggItem;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.world.World;
@@ -34,7 +30,7 @@ import static com.setycz.chickens.item.utils.NbtUtils.getChickenRegistryNameFrom
 /**
  * Created by setyc on 13.02.2016.
  */
-public class ItemColoredEgg extends EggItem implements IColorSource {
+public class ItemColoredEgg extends EggItem {
     public ItemColoredEgg() {
         super(new Properties().group(ModItemGroups.CHICKENS_TAB));
         setRegistryName(new ResourceLocation(ChickensMod.MODID, "colored_egg"));
@@ -59,9 +55,14 @@ public class ItemColoredEgg extends EggItem implements IColorSource {
         if (chickenRegistryItem == null)
             return null;
 
-        chickenRegistryItem.getLayItemHolder().getStack()
+        Item layItem = chickenRegistryItem.getLayItemHolder().getStack().getItem();
 
-        DyeColor color = DyeColor.byDyeDamage(stack.getMetadata());
+        if(!(layItem instanceof DyeItem)){
+            return null;
+        }
+
+        DyeItem dyeItem = (DyeItem) layItem;
+        DyeColor color = dyeItem.getDyeColor();
 
         String unlocalizedName = color.getTranslationKey();
 
@@ -81,11 +82,6 @@ public class ItemColoredEgg extends EggItem implements IColorSource {
                 itemStacks.add(itemStack);
             }
         }
-    }
-
-    @Override
-    public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        return DyeColor.byDyeDamage(stack.getMetadata()).getColorValue();
     }
 
     @Override

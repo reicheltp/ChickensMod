@@ -2,7 +2,6 @@ package com.setycz.chickens.item;
 
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.entity.EntityChickensChicken;
-import com.setycz.chickens.handler.IColorSource;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
 
@@ -31,8 +30,7 @@ import static com.setycz.chickens.item.utils.NbtUtils.getChickenRegistryNameFrom
 /**
  * Created by setyc on 12.02.2016.
  */
-@SuppressWarnings("deprecation")
-public class ItemSpawnEgg extends Item implements IColorSource {
+public class ItemSpawnEgg extends Item{
 
     public ItemSpawnEgg() {
         super(new Properties().group(ModItemGroups.CHICKENS_TAB));
@@ -69,15 +67,6 @@ public class ItemSpawnEgg extends Item implements IColorSource {
 
         return TextComponentUtils.toTextComponent(() -> I18n.format("entity." + chickenDescription.getEntityName() + ".name"));
     }
-
-    @Override
-    public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        ChickensRegistryItem chickenDescription = ChickensRegistry.getByRegistryName(getChickenRegistryNameFromStack(stack));
-        if(chickenDescription == null) return 0000000;
-        return renderPass == 0 ? chickenDescription.getBgColor() : chickenDescription.getFgColor();
-    }
-
-
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
