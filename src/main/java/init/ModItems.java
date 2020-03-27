@@ -8,15 +8,15 @@ import net.minecraftforge.registries.ObjectHolder;
 
 public class ModItems {
 
-    @ObjectHolder("spawn_egg")
+    @ObjectHolder("chickens:spawn_egg")
     public static final Item ITEMSPAWNEGG =  null;
 
-    @ObjectHolder("colored_egg")
+    @ObjectHolder("chickens:colored_egg")
     public static final Item COLOREDEGG = null;
 
-    @ObjectHolder("liquid_egg")
+    @ObjectHolder("chickens:liquid_egg")
     public static final Item LIQUIDEGG = null;
 
-    @ObjectHolder("analyzer")
+    @ObjectHolder("chickens:analyzer")
     public static final Item ANALYZER = null;
 }
