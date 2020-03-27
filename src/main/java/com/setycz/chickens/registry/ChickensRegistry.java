@@ -12,9 +12,8 @@ import javax.annotation.Nullable;
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.handler.SpawnType;
 
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.*;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
 
 /**
  * Created by setyc on 12.02.2016.
@@ -83,16 +82,6 @@ public final class ChickensRegistry {
         return result;
     }
 
-    @Nullable
-    public static ChickensRegistryItem findDyeChicken(int dyeMetadata) {
-        for (ChickensRegistryItem chicken : ITEMS.values()) {
-            if (chicken.isDye(dyeMetadata)) {
-                return chicken;
-            }
-        }
-        return null;
-    }
-
     public static List<ChickensRegistryItem> getPossibleChickensToSpawn(SpawnType spawnType) {
         List<ChickensRegistryItem> result = new ArrayList<ChickensRegistryItem>();
         for (ChickensRegistryItem chicken : ITEMS.values()) {
@@ -108,7 +97,7 @@ public final class ChickensRegistry {
             return SpawnType.HELL;
         }
 
-        if (biome == Biomes.EXTREME_HILLS || biome.isSnowyBiome()) {
+        if (biome instanceof SnowyBeachBiome || biome instanceof SnowyMountainsBiome || biome instanceof SnowyTaigaBiome || biome instanceof SnowyTaigaHillsBiome || biome instanceof SnowyTaigaMountainsBiome || biome instanceof SnowyTundraBiome) {
             return SpawnType.SNOW;
         }
 

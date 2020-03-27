@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import com.setycz.chickens.handler.ItemHolder;
 import com.setycz.chickens.handler.SpawnType;
 
-import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -126,14 +125,6 @@ public class ChickensRegistryItem {
 
     public boolean isDye() {
         return layItem.getItem().getTags().contains(new ResourceLocation("forge", "dyes"));
-    }
-
-    public boolean isDye(int dyeMetadata) {
-        return layItem.getItem() instanceof DyeItem && layItem.getMeta() == dyeMetadata;
-    }
-
-    public int getDyeMetadata() {
-        return layItem.getMeta();
     }
 
     public boolean canSpawn() {

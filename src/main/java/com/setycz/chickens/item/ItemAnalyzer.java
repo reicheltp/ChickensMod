@@ -1,23 +1,25 @@
 package com.setycz.chickens.item;
 
 import java.util.List;
+import java.util.Random;
 
 import com.setycz.chickens.entity.EntityChickensChicken;
 
 import init.ModItemGroups;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by setyc on 21.12.2016.
@@ -33,12 +35,13 @@ public class ItemAnalyzer extends Item {
         return "analyzer";
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack,  World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(I18n.translateToLocal("item.analyzer.tooltip1"));
-        tooltip.add(I18n.translateToLocal("item.analyzer.tooltip2"));
+
+        tooltip.add(TextComponentUtils.toTextComponent(() -> I18n.format("item.analyzer.tooltip1")));
+        tooltip.add(TextComponentUtils.toTextComponent(() -> I18n.format("item.analyzer.tooltip2")));
     }
 
     @Override
@@ -69,7 +72,6 @@ public class ItemAnalyzer extends Item {
             }
         }
 
-        stack.damageItem(1, target);
-        return true;
+        return stack.attemptDamageItem(1, new Random(), (ServerPlayerEntity) playerIn);
     }
 }
