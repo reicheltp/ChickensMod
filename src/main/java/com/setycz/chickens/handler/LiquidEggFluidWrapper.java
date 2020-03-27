@@ -1,20 +1,24 @@
 package com.setycz.chickens.handler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.setycz.chickens.registry.LiquidEggRegistry;
 
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+
+import static com.setycz.chickens.item.utils.NbtUtils.getLiquidRegistryNameFromStack;
+import static net.minecraftforge.fluids.FluidAttributes.BUCKET_VOLUME;
 
 /**
  * Created by setyc on 13.12.2016.
@@ -28,14 +32,8 @@ public class LiquidEggFluidWrapper implements IFluidHandler, IFluidHandlerItem, 
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable Direction facing) {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ||
-               capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY; 
-    }
-
-    @Override
     @Nullable
-    public <T> T getCapability(Capability<T> capability, @Nullable Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
         }
@@ -45,45 +43,64 @@ public class LiquidEggFluidWrapper implements IFluidHandler, IFluidHandlerItem, 
         return null;
     }
 
+    //TODO What is this used for???
     @Override
-    public IFluidTankProperties[] getTankProperties() {
-        return new FluidTankProperties[]{new FluidTankProperties(getFluid(), Fluid.BUCKET_VOLUME)};
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
+    public int getTanks() {
         return 0;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
+    public FluidStack getFluidInTank(int i) {
+        return getFluid();
+    }
+
+    @Override
+    public int getTankCapacity(int i) {
+        return BUCKET_VOLUME;
+    }
+
+    @Override
+    public boolean isFluidValid(int i, @Nonnull FluidStack fluidStack) {
+        return fluidStack.getFluid() == Fluids.WATER || fluidStack.getFluid() == Fluids.LAVA;
+    }
+
+    @Override
+    public int fill(FluidStack fluidStack, FluidAction fluidAction) {
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public FluidStack drain(FluidStack resource, FluidAction fluidAction) {
         FluidStack fluidStack = getFluid();
         if (!resource.isFluidEqual(fluidStack)) {
             return null;
         }
 
-        return drain(resource.amount, doDrain);
+        return drain(resource.getAmount(), fluidAction);
     }
 
     private FluidStack getFluid() {
-        Fluid fluid = LiquidEggRegistry.findById(container.getMetadata()).getFluid();
-        return new FluidStack(fluid, Fluid.BUCKET_VOLUME);
+        Fluid fluid = LiquidEggRegistry.getByRegistryName(getLiquidRegistryNameFromStack(container)).getFluid();
+        return new FluidStack(fluid, BUCKET_VOLUME);
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        if (container.getCount() < 1 || maxDrain < Fluid.BUCKET_VOLUME) {
+    public FluidStack drain(int maxDrain, FluidAction fluidAction) {
+        if (container.getCount() < 1 || maxDrain < BUCKET_VOLUME) {
             return null;
         }
 
         FluidStack fluidStack = getFluid();
-        if (doDrain) {
+        if (fluidAction == FluidAction.EXECUTE) {
             container.shrink(1);
         }
+
         return fluidStack;
     }
+
     /**
      * @return empty stack - item is consumable
      */

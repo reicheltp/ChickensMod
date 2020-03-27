@@ -23,10 +23,6 @@ public final class LiquidEggRegistry {
         return ITEMS.values();
     }
 
-    public static LiquidEggRegistryItem findById(int id) {
-        return ITEMS.get(id);
-    }
-
     @Nullable
     public static LiquidEggRegistryItem getByResourceLocation(ResourceLocation type) {
         LiquidEggRegistryItem liquidEgg = ITEMS.get(type);
