@@ -53,24 +53,9 @@ public class EntityColoredEgg extends ThrowableEntity {
         return this.dataManager.get(CHICKEN_TYPE);
     }
 
-
     @Override
-    protected void entityInit() {
-        super.entityInit();
-        this.dataManager.register(CHICKEN_TYPE, "");
-    }
+    protected void registerData() {
 
-    @Override
-    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
-        super.writeToNBT(tagCompound);
-        tagCompound.setString(TYPE_NBT, getChickenType());
-        return tagCompound;
-    }
-
-    @Override
-    public void readFromNBT(CompoundNBT tagCompound) {
-        super.readFromNBT(tagCompound);
-        setChickenType(tagCompound.getString(TYPE_NBT));
     }
 
     @Override
