@@ -106,7 +106,7 @@ public class ItemColoredEgg extends EggItem {
         if (!worldIn.isRemote) {
             String chickenType = getChickenType(itemStackIn);
             if (chickenType != null) {
-                EntityColoredEgg entityIn = new EntityColoredEgg(worldIn, playerIn);
+                EntityColoredEgg entityIn = new EntityColoredEgg(worldIn);
                 entityIn.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
                 entityIn.setChickenType(chickenType);
                 entityIn.getType().spawn(worldIn, null, null, entityIn.getPosition(), SpawnReason.MOB_SUMMONED, true, false);
