@@ -88,26 +88,26 @@ public class ChickensMod {
 	
 	public static final CreativeTabs chickensTab = new ChickensTab();
 
-	public static final Item spawnEgg = new ItemSpawnEgg().setTranslationKey("spawn_egg")
+	public static final Item spawnEgg = new ItemSpawnEgg()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "spawn_egg");
-	public static final Item coloredEgg = new ItemColoredEgg().setTranslationKey("colored_egg")
+	public static final Item coloredEgg = new ItemColoredEgg()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "colored_egg");
-	public static final Item liquidEgg = new ItemLiquidEgg().setTranslationKey("liquid_egg")
+	public static final Item liquidEgg = new ItemLiquidEgg()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "liquid_egg");
-	public static final Item analyzer = new ItemAnalyzer().setTranslationKey("analyzer")
+	public static final Item analyzer = new ItemAnalyzer()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "analyzer");
 
 	public static final Block henhouse = new BlockHenhouse()
-			.setTranslationKey("henhouse").setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse");
-	public static final Block henhouse_acacia = new BlockHenhouse().setTranslationKey("henhouse_acacia")
+			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse");
+	public static final Block henhouse_acacia = new BlockHenhouse()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse_acacia");
-	public static final Block henhouse_birch = new BlockHenhouse().setTranslationKey("henhouse_birch")
+	public static final Block henhouse_birch = new BlockHenhouse()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse_birch");
-	public static final Block henhouse_dark_oak = new BlockHenhouse().setTranslationKey("henhouse_dark_oak")
+	public static final Block henhouse_dark_oak = new BlockHenhouse()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse_dark_oak");
-	public static final Block henhouse_jungle = new BlockHenhouse().setTranslationKey("henhouse_jungle")
+	public static final Block henhouse_jungle = new BlockHenhouse()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse_jungle");
-	public static final Block henhouse_spruce = new BlockHenhouse().setTranslationKey("henhouse_spruce")
+	public static final Block henhouse_spruce = new BlockHenhouse()
 			.setCreativeTab(chickensTab).setRegistryName(ChickensMod.MODID, "henhouse_spruce");
 
 	public static final TileEntityGuiHandler guiHandler = new TileEntityGuiHandler();
