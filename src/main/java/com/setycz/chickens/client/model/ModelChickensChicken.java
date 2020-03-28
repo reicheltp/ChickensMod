@@ -1,12 +1,13 @@
 package com.setycz.chickens.client.model;
 
-import net.minecraft.client.model.ModelChicken;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.entity.model.ChickenModel;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by setyc on 12.02.2016.
  */
-@SideOnly(Side.CLIENT)
-public class ModelChickensChicken extends ModelChicken {
+@OnlyIn(Dist.CLIENT)
+public class ModelChickensChicken<T extends Entity> extends ChickenModel<T> {
 }
