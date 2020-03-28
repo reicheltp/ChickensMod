@@ -40,8 +40,8 @@ public class CommonProxy {
 */
 
 	public void registerLiquidEgg(LiquidEggRegistryItem liquidEgg) {
-		DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.putObject(ChickensMod.liquidEgg, new DispenseLiquidEgg());
-		DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.putObject(ChickensMod.coloredEgg, new DispenseColorEgg());
+		DispenserBlock.registerDispenseBehavior(ChickensMod.liquidEgg, new DispenseLiquidEgg());
+		DispenserBlock.registerDispenseBehavior(ChickensMod.coloredEgg, new DispenseColorEgg());
 	}
 
 	class DispenseColorEgg extends ProjectileDispenseBehavior {
@@ -58,7 +58,7 @@ public class CommonProxy {
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			ItemLiquidEgg itemLiquidEgg = (ItemLiquidEgg) stack.getItem();
-			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().getValue(DispenserBlock.FACING));
+			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
 			Block liquid = LiquidEggRegistry.findById(stack.getMetadata()).getLiquid();
 			if (!itemLiquidEgg.tryPlaceContainedLiquid(null, source.getWorld(), blockpos, liquid)) {
 				return super.dispenseStack(source, stack);

@@ -33,7 +33,7 @@ public class ContainerHenhouse extends Container {
         //input 
         // Overriding canTake and decrStack to use the internal extract and by pass the locks in place for other things taking items. 
         
-        this.addSlotToContainer(new SlotItemHandler(invTileEntityHenhouse, TileEntityHenhouse.hayBaleSlotIndex, 25, 19)
+        this.addSlot(new SlotItemHandler(invTileEntityHenhouse, TileEntityHenhouse.hayBaleSlotIndex, 25, 19)
         		{
         			@Override
         			public boolean canTakeStack(PlayerEntity playerIn)
@@ -50,11 +50,11 @@ public class ContainerHenhouse extends Container {
         		});
         
         //output
-        this.addSlotToContainer(new SlotItemHandler(invTileEntityHenhouse, TileEntityHenhouse.dirtSlotIndex, 25, 55));
+        this.addSlot(new SlotItemHandler(invTileEntityHenhouse, TileEntityHenhouse.dirtSlotIndex, 25, 55));
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
-                this.addSlotToContainer(new SlotItemHandler(
+                this.addSlot(new SlotItemHandler(
                 		invTileEntityHenhouse,
                         TileEntityHenhouse.firstItemSlotIndex + (row * 3) + column,
                         98 + column * 18,
@@ -64,12 +64,12 @@ public class ContainerHenhouse extends Container {
 
         for (int l = 0; l < 3; ++l) {
             for (int k = 0; k < 9; ++k) {
-                this.addSlotToContainer(new Slot(playerInventory, k + l * 9 + 9, 8 + k * 18, l * 18 + 84));
+                this.addSlot(new Slot(playerInventory, k + l * 9 + 9, 8 + k * 18, l * 18 + 84));
             }
         }
 
         for (int i1 = 0; i1 < 9; ++i1) {
-            this.addSlotToContainer(new Slot(playerInventory, i1, 8 + i1 * 18, 142));
+            this.addSlot(new Slot(playerInventory, i1, 8 + i1 * 18, 142));
         }
     }
 
@@ -117,11 +117,11 @@ public class ContainerHenhouse extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        for (IContainerListener listener : listeners) {
-            if (energy != tileEntityHenhouse.getField(0)) {
-                listener.sendWindowProperty(this, 0, tileEntityHenhouse.getField(0));
-            }
-        }
+//        for (IContainerListener listener : listeners) {
+//            if (energy != tileEntityHenhouse.getField(0)) {
+//                listener.sendWindowProperty(this, 0, tileEntityHenhouse.getField(0));
+//            }
+//        }
 
         energy = tileEntityHenhouse.getField(0);
     }
