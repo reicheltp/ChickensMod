@@ -1,0 +1,66 @@
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml" #mandatory
+
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+loaderVersion="[31,)" #mandatory (28 is current forge version)
+
+# A URL to refer people to when problems occur with this mod
+issueTrackerURL="https://github.com/setycz/ChickensMod/issues" #optional
+
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+
+	# The modid of the mod
+	modId="chickens" #mandatory
+
+	# The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
+	version="${file.jarVersion}" #mandatory
+
+	 # A display name for the mod
+	displayName="Chickens" #mandatory
+
+	# A URL for the "homepage" for this mod, displayed in the mod UI
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/chickens" #optional
+
+	# A text field displayed in the mod UI
+	authors="setycz" #optional
+
+	# The description text for the mod (multi line!) (#mandatory)
+	description='''
+	This is a Minecraft Forge 1.15.4 mod that I use to test various things (mainly code for people in the Minecraft Forum Modification Development section and the Minecraft Forge Modder Support section).
+	It's not supposed to be a complete or working mod.
+	'''
+
+	[[dependencies.testmod3]] #optional
+
+		# the modid of the dependency
+		modId="forge" #mandatory
+
+		# Does this dependency have to exist - if not, ordering below must be specified
+		mandatory=true #mandatory
+
+		# The version range of the dependency
+		versionRange="[31.1,)" #mandatory
+
+		# An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+		ordering="NONE"
+
+		# Side this dependency is applied on - BOTH, CLIENT or SERVER
+		side="BOTH"
+
+	[[dependencies.chickens]]
+
+		# the modid of the dependency
+		modId="minecraft"
+
+		# Does this dependency have to exist - if not, ordering below must be specified
+		mandatory=true
+
+		# The version range of the dependency
+		versionRange="[1.15.4]"
+
+	   	# An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+		ordering="NONE"
+
+	   	# Side this dependency is applied on - BOTH, CLIENT or SERVER
+ 		side="BOTH"
