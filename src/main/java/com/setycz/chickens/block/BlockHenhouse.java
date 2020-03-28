@@ -20,10 +20,15 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by setyc on 01.03.2016.
@@ -39,9 +44,9 @@ public class BlockHenhouse extends ContainerBlock {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
-    	super.addInformation(stack, player, tooltip, advanced);
-        tooltip.add(I18n.translateToLocal("tile.henhouse.tooltip"));
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag advanced) {
+        super.addInformation(stack, worldIn, tooltip, advanced);
+        tooltip.add(new TranslationTextComponent("tile.henhouse.tooltip"));
     }
 
     @Override

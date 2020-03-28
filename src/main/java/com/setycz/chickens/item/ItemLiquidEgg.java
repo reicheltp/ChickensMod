@@ -29,7 +29,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,9 +46,9 @@ public class ItemLiquidEgg extends EggItem implements IColorSource {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack,  World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(I18n.translateToLocal("item.liquid_egg.tooltip"));
+        tooltip.add(new TranslationTextComponent("item.liquid_egg.tooltip"));
     }
 
     @Override
@@ -67,9 +68,9 @@ public class ItemLiquidEgg extends EggItem implements IColorSource {
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public ITextComponent getDisplayName(ItemStack stack) {
         Block liquid = LiquidEggRegistry.findById(stack.getMetadata()).getLiquid();
-        return I18n.translateToLocal(getTranslationKey() + "." + liquid.getTranslationKey().substring(5) + ".name");
+        return new TranslationTextComponent(getTranslationKey() + "." + liquid.getTranslationKey().substring(5) + ".name");
     }
 
     @Override

@@ -20,10 +20,13 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by setyc on 13.02.2016.
@@ -35,20 +38,20 @@ public class ItemColoredEgg extends EggItem implements IColorSource {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack,  World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(I18n.translateToLocal("item.colored_egg.tooltip"));
+        tooltip.add(new TranslationTextComponent("item.colored_egg.tooltip"));
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public ITextComponent getDisplayName(ItemStack stack) {
         DyeColor color = DyeColor.byDyeDamage(stack.getMetadata());
         String unlocalizedName = color.getTranslationKey();
         // hotfix for compatibility with MoreChickens
         if (unlocalizedName.equals("silver")) {
             unlocalizedName += "Dye";
         }
-        return I18n.translateToLocal(getTranslationKey() + "." + unlocalizedName + ".name");
+        return new TranslationTextComponent(getTranslationKey() + "." + unlocalizedName + ".name");
     }
 
     @Override

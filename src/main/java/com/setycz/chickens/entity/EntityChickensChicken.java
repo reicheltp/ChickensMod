@@ -16,6 +16,8 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -25,7 +27,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -105,13 +106,13 @@ public class EntityChickensChicken extends ChickenEntity {
     }
 
     @Override
-    public String getName() {
+    public ITextComponent getName() {
         if (this.hasCustomName()) {
             return getCustomNameTag();
         }
 
         ChickensRegistryItem chickenDescription = getChickenDescription();
-        return I18n.translateToLocal("entity." + chickenDescription.getEntityName() + ".name");
+        return new TranslationTextComponent("entity." + chickenDescription.getEntityName() + ".name");
     }
 
     @Override
