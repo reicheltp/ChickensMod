@@ -1,24 +1,23 @@
 package com.setycz.chickens.block;
 
-import java.util.List;
-
-import com.setycz.chickens.ChickensMod;
-
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -26,6 +25,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -34,12 +35,13 @@ import java.util.List;
  * Created by setyc on 01.03.2016.
  */
 public class BlockHenhouse extends ContainerBlock {
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", Direction.Plane.HORIZONTAL);
-
     public BlockHenhouse() {
-        super(Material.WOOD);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, Direction.NORTH));
-        this.setHardness(2);
+        super(Properties
+                .create(Material.WOOD)
+                .hardnessAndResistance(2)
+        );
+
+        this.setDefaultState(this.getDefaultState().with(BlockStateProperties.FACING, Direction.NORTH));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -49,34 +51,43 @@ public class BlockHenhouse extends ContainerBlock {
         tooltip.add(new TranslationTextComponent("tile.henhouse.tooltip"));
     }
 
+    @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return new TileEntityHenhouse();
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, BlockState state) {
+    public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof TileEntityHenhouse) {
             ((TileEntityHenhouse) tileEntity).dropContents();
         }
 
-        super.breakBlock(worldIn, pos, state);
+        super.harvestBlock(worldIn, player, pos, state, te, stack);
     }
 
+    @Nullable
     @Override
-    public BlockState getStateForPlacement(World world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer, Hand hand) {
-        return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+
+        BlockState state = this.getDefaultState();
+        if (player != null) {
+            state.with(BlockStateProperties.FACING, player.getHorizontalFacing().getOpposite());
+        }
+
+        return state;
     }
 
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+        worldIn.setBlockState(pos, state.with(BlockStateProperties.FACING, placer.getHorizontalFacing().getOpposite()), 2);
 
         if (stack.hasDisplayName()) {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof TileEntityHenhouse) {
-                ((TileEntityHenhouse) tileEntity).setCustomName(stack.getDisplayName());
+                ((TileEntityHenhouse) tileEntity).setCustomName(stack.getDisplayName().getFormattedText());
             }
         }
     }
@@ -87,45 +98,25 @@ public class BlockHenhouse extends ContainerBlock {
     }
 
     @Override
-    @Deprecated
-    public BlockState getStateFromMeta(int meta) {
-        Direction enumfacing = Direction.byIndex(meta);
-        if (enumfacing.getAxis() == Direction.Axis.Y) {
-            enumfacing = Direction.NORTH;
-        }
-        return getDefaultState().withProperty(FACING, enumfacing);
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(BlockStateProperties.FACING);
+        super.fillStateContainer(builder);
     }
 
     @Override
-    public int getMetaFromState(BlockState state) {
-        return state.getValue(FACING).getIndex();
-    }
-
-    @Override
-    @Deprecated
-    public BlockState withRotation(BlockState state, Rotation rot) {
-        return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    @Deprecated
-    public BlockState withMirror(BlockState state, Mirror mirrorIn) {
-        return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING);
-    }
-
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult trace) {
         if (!worldIn.isRemote) {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof TileEntityHenhouse) {
-                playerIn.openGui(ChickensMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                if (playerIn instanceof ServerPlayerEntity && !(playerIn instanceof FakePlayer)) {
+                    INamedContainerProvider container = getContainer(state, worldIn, pos);
+                    ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerIn;
+
+                    NetworkHooks.openGui(serverPlayer, container, pos);
+                }
             }
         }
-        return true;
+
+        return ActionResultType.SUCCESS;
     }
 }

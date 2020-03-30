@@ -1,10 +1,9 @@
 package com.setycz.chickens.client.render;
 
+import com.setycz.chickens.client.model.ModelChickensChicken;
 import com.setycz.chickens.entity.EntityChickensChicken;
-
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,14 +13,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created by setyc on 12.02.2016.
  */
 @OnlyIn(Dist.CLIENT)
-public class RenderChickensChicken extends MobRenderer<EntityChickensChicken> {
+public class RenderChickensChicken extends MobRenderer<EntityChickensChicken, ModelChickensChicken<EntityChickensChicken>> {
 
-    public RenderChickensChicken(EntityRendererManager renderManagerIn, ModelBase modelBaseIn) {
+    public RenderChickensChicken(EntityRendererManager renderManagerIn, ModelChickensChicken<EntityChickensChicken> modelBaseIn) {
         super(renderManagerIn, modelBaseIn, 0.3F);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityChickensChicken entity) {
+    public ResourceLocation getEntityTexture(EntityChickensChicken entity) {
         return entity.getTexture();
     }
 

@@ -1,13 +1,10 @@
 package com.setycz.chickens.item;
 
-import javax.annotation.Nullable;
-
 import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.entity.EntityChickensChicken;
 import com.setycz.chickens.handler.IColorSource;
 import com.setycz.chickens.registry.ChickensRegistry;
 import com.setycz.chickens.registry.ChickensRegistryItem;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,24 +21,27 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by setyc on 12.02.2016.
  */
 @SuppressWarnings("deprecation")
 public class ItemSpawnEgg extends Item implements IColorSource {
     public ItemSpawnEgg() {
+        super(new Properties().group(ChickensMod.chickensTab));
+
         setHasSubtypes(true);
     }
-    
+
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-        if (this.isInCreativeTab(tab))
-        {
-        	for (ChickensRegistryItem chicken : ChickensRegistry.getItems()) {
-        		ItemStack itemstack = new ItemStack(this, 1);
-        		applyEntityIdToItemStack(itemstack, chicken.getRegistryName()); 
-        		subItems.add(itemstack);
-        	}
+        if (this.isInCreativeTab(tab)) {
+            for (ChickensRegistryItem chicken : ChickensRegistry.getItems()) {
+                ItemStack itemstack = new ItemStack(this, 1);
+                applyEntityIdToItemStack(itemstack, chicken.getRegistryName());
+                subItems.add(itemstack);
+            }
         }
     }
 
@@ -56,7 +56,7 @@ public class ItemSpawnEgg extends Item implements IColorSource {
     @Override
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
         ChickensRegistryItem chickenDescription = ChickensRegistry.getByRegistryName(getTypeFromStack(stack));
-        if(chickenDescription == null) return 0000000;
+        if (chickenDescription == null) return 0000000;
         return renderPass == 0 ? chickenDescription.getBgColor() : chickenDescription.getFgColor();
     }
 
@@ -65,7 +65,7 @@ public class ItemSpawnEgg extends Item implements IColorSource {
         if (!worldIn.isRemote) {
             ItemStack stack = playerIn.getHeldItem(hand);
             BlockPos correlatedPos = correctPosition(pos, facing);
-            activate(stack, worldIn, correlatedPos, stack.getMetadata());
+            activate(stack, worldIn, correlatedPos);
             if (!playerIn.capabilities.isCreativeMode) {
                 stack.shrink(1);
             }
@@ -85,7 +85,7 @@ public class ItemSpawnEgg extends Item implements IColorSource {
         return new BlockPos(posX, posY, posZ);
     }
 
-    private void activate(ItemStack stack, World worldIn, BlockPos pos, int metadata) {
+    private void activate(ItemStack stack, World worldIn, BlockPos pos) {
         ResourceLocation entityName = new ResourceLocation(ChickensMod.MODID, ChickensMod.CHICKEN);
         EntityChickensChicken entity = (EntityChickensChicken) EntityList.createEntityByIDFromName(entityName, worldIn);
         if (entity == null) {
@@ -95,46 +95,45 @@ public class ItemSpawnEgg extends Item implements IColorSource {
         entity.onInitialSpawn(worldIn.getDifficultyForLocation(pos), null);
         entity.setChickenType(getTypeFromStack(stack));
 
-        CompoundNBT stackNBT = stack.getTagCompound();
+        CompoundNBT stackNBT = stack.getTag();
         if (stackNBT != null) {
-            CompoundNBT entityNBT = entity.writeToNBT(new CompoundNBT());
+            CompoundNBT entityNBT = new CompoundNBT();
+            entity.writeEntityToNBT(entityNBT);
             entityNBT.merge(stackNBT);
             entity.readEntityFromNBT(entityNBT);
         }
 
         worldIn.spawnEntity(entity);
     }
-    
-    
-    public static void applyEntityIdToItemStack(ItemStack stack, ResourceLocation entityId)
-    {
-        CompoundNBT nbttagcompound = stack.hasTagCompound() ? stack.getTagCompound() : new CompoundNBT();
+
+
+    public static void applyEntityIdToItemStack(ItemStack stack, ResourceLocation entityId) {
+        CompoundNBT nbttagcompound = stack.hasTag() ? stack.getTag() : new CompoundNBT();
         CompoundNBT nbttagcompound1 = new CompoundNBT();
-        nbttagcompound1.setString("id", entityId.toString());
-        nbttagcompound.setTag("ChickenType", nbttagcompound1);
-        stack.setTagCompound(nbttagcompound);
+        nbttagcompound1.putString("id", entityId.toString());
+        nbttagcompound.put("ChickenType", nbttagcompound1);
+        stack.setTag(nbttagcompound);
     }
-    
-    
+
+
     /**
      * Applies the data in the EntityTag tag of the given ItemStack to the given Entity.
-     * @return 
+     *
+     * @return
      */
     @Nullable
-    public static String getTypeFromStack(ItemStack stack)
-    {
-    	CompoundNBT nbttagcompound = stack.getTagCompound();
+    public static String getTypeFromStack(ItemStack stack) {
+        CompoundNBT nbttagcompound = stack.getTag();
 
-    	if (nbttagcompound != null && nbttagcompound.hasKey("ChickenType", 10))
-    	{
-    		new CompoundNBT();
-    		CompoundNBT chickentag = nbttagcompound.getCompoundTag("ChickenType");
-    		
-    		return chickentag.getString("id");
-    	}
-    	
-    	return null;
+        if (nbttagcompound != null && nbttagcompound.contains("ChickenType", 10)) {
+            new CompoundNBT();
+            CompoundNBT chickentag = nbttagcompound.getCompound("ChickenType");
+
+            return chickentag.getString("id");
+        }
+
+        return null;
     }
-    
-   
+
+
 }

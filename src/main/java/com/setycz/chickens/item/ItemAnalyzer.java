@@ -1,9 +1,7 @@
 package com.setycz.chickens.item;
 
-import java.util.List;
-
+import com.setycz.chickens.ChickensMod;
 import com.setycz.chickens.entity.EntityChickensChicken;
-
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -25,8 +24,11 @@ import javax.annotation.Nullable;
  */
 public class ItemAnalyzer extends Item {
     public ItemAnalyzer() {
-        setMaxStackSize(1);
-        setMaxDamage(238);
+        super(new Properties()
+                .group(ChickensMod.chickensTab)
+                .maxStackSize(1)
+                .maxDamage(238)
+        );
     }
 
     @OnlyIn(Dist.CLIENT)

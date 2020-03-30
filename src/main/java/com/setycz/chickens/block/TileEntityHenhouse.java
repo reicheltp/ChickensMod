@@ -1,24 +1,19 @@
 package com.setycz.chickens.block;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.setycz.chickens.capabilities.InventoryStroageModifiable;
 import com.setycz.chickens.client.gui.GuiHenhouse;
 import com.setycz.chickens.client.gui.IInventoryGui;
 import com.setycz.chickens.client.gui.container.ContainerHenhouse;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -31,6 +26,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by setyc on 01.03.2016.
@@ -46,30 +45,33 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
     private static final double FENCE_THRESHOLD = 0.5;
 
     private String customName;
-    private final InventoryStroageModifiable slots = new InventoryStroageModifiable("container.henhouse", 11)
-    		{
-    			@Override
-    			public boolean canInsertSlot(int slotIndex, ItemStack stackIn)
-    			{
-    				if(slotIndex == hayBaleSlotIndex && stackIn.getItem() == Item.getItemFromBlock(Blocks.HAY_BLOCK))
-    					return true;
-    				else if(slotIndex == dirtSlotIndex && stackIn.getItem() == Item.getItemFromBlock(Blocks.DIRT))
-    					return true;
-    				else 
-    					return false;
-    			}
-    			
-    		    @Override
-    		    public boolean canExtractSlot(int slotIndex)
-    		    {
-    		    	if(slotIndex == hayBaleSlotIndex)
-    		    		return false;
-    		    	
-    		    	return true;
-    		    }
-    		};
-    		
+    private final InventoryStroageModifiable slots = new InventoryStroageModifiable("container.henhouse", 11) {
+        @Override
+        public boolean canInsertSlot(int slotIndex, ItemStack stackIn) {
+            if (slotIndex == hayBaleSlotIndex && stackIn.getItem() == Item.getItemFromBlock(Blocks.HAY_BLOCK))
+                return true;
+            else if (slotIndex == dirtSlotIndex && stackIn.getItem() == Item.getItemFromBlock(Blocks.DIRT))
+                return true;
+            else
+                return false;
+        }
+
+        @Override
+        public boolean canExtractSlot(int slotIndex) {
+            if (slotIndex == hayBaleSlotIndex)
+                return false;
+
+            return true;
+        }
+    };
+
     private int energy = 0;
+
+    public TileEntityHenhouse(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+
+        //TODO: watch if this works
+    }
 
     @Nullable
     public static ItemStack pushItemStack(ItemStack itemToLay, World worldObj, Vec3d pos) {
@@ -84,10 +86,10 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
     }
 
     private static List<TileEntityHenhouse> findHenhouses(World worldObj, Vec3d pos, double radius) {
-        int firstChunkX = MathHelper.floor((pos.x - radius - World.MAX_ENTITY_RADIUS) / 16.0D);
-        int lastChunkX = MathHelper.floor((pos.x + radius + World.MAX_ENTITY_RADIUS) / 16.0D);
-        int firstChunkY = MathHelper.floor((pos.z - radius - World.MAX_ENTITY_RADIUS) / 16.0D);
-        int lastChunkY = MathHelper.floor((pos.z + radius + World.MAX_ENTITY_RADIUS) / 16.0D);
+        int firstChunkX = MathHelper.floor((pos.x - radius - worldObj.getMaxEntityRadius()) / 16.0D);
+        int lastChunkX = MathHelper.floor((pos.x + radius + worldObj.getMaxEntityRadius()) / 16.0D);
+        int firstChunkY = MathHelper.floor((pos.z - radius - worldObj.getMaxEntityRadius()) / 16.0D);
+        int lastChunkY = MathHelper.floor((pos.z + radius + worldObj.getMaxEntityRadius()) / 16.0D);
 
         List<Double> distances = new ArrayList<Double>();
         List<TileEntityHenhouse> result = new ArrayList<TileEntityHenhouse>();
@@ -133,34 +135,33 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
         if (capacity <= 0) {
             return stack;
         }
-        
+
         for (int slotIndex = firstItemSlotIndex; slotIndex <= lastItemSlotIndex; slotIndex++) {
-        	
-        	if(stack.isEmpty())
-        		break;
-        	int stackSizePre = stack.getCount();
-        		ItemStack simulated = slots.insertItemInternal(slotIndex, stack, true);
-        	int powerToUse = stackSizePre - simulated.getCount();
-        	
-        	if(powerToUse > 0)
-        	{
-        		consumeEnergy(powerToUse);
-        		capacity -= powerToUse;
-        		
-        		stack = slots.insertItemInternal(slotIndex, stack, false);
-        	}
+
+            if (stack.isEmpty())
+                break;
+            int stackSizePre = stack.getCount();
+            ItemStack simulated = slots.insertItemInternal(slotIndex, stack, true);
+            int powerToUse = stackSizePre - simulated.getCount();
+
+            if (powerToUse > 0) {
+                consumeEnergy(powerToUse);
+                capacity -= powerToUse;
+
+                stack = slots.insertItemInternal(slotIndex, stack, false);
+            }
         }
-        
-        markDirty(); 
+
+        markDirty();
         return stack;
     }
 
     private void consumeEnergy(int amount) {
-    	
+
         while (amount > 0) {
             if (energy == 0) {
                 assert !slots.getStackInSlot(hayBaleSlotIndex).isEmpty();
-                	slots.extractItemInternal(hayBaleSlotIndex, 1, false);
+                slots.extractItemInternal(hayBaleSlotIndex, 1, false);
                 energy += hayBaleEnergy;
             }
 
@@ -169,7 +170,7 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
             amount -= consumed;
 
             if (energy <= 0) {
-                    slots.insertItemInternal(dirtSlotIndex, new ItemStack(Blocks.DIRT, 1), false);
+                slots.insertItemInternal(dirtSlotIndex, new ItemStack(Blocks.DIRT, 1), false);
             }
         }
     }
@@ -200,49 +201,47 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
         }
         return (slots.getSlotLimit(dirtSlotIndex) - dirtStack.getCount()) * hayBaleEnergy;
     }
-    
+
     /**
      * Drop all contents
      */
-	public void dropContents()
-	{
-        for (int i = 0; i < this.slots.getSlots(); ++i)
-        {
-        	ItemStack stack = this.slots.extractItemInternal(i, this.slots.getSlotLimit(i), false);
-        	
-        	if(!stack.isEmpty())
-        	{
-        		this.world.spawnEntity(new ItemEntity(world, this.pos.getX(), this.pos.getY()+1, this.pos.getZ(), stack));
-        	}
+    public void dropContents() {
+        for (int i = 0; i < this.slots.getSlots(); ++i) {
+            ItemStack stack = this.slots.extractItemInternal(i, this.slots.getSlotLimit(i), false);
+
+            if (!stack.isEmpty()) {
+                InventoryHelper.spawnItemStack(world, this.pos.getX(), this.pos.getY() + 1, this.pos.getZ(), stack);
+            }
         }
-	}
+    }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT compound) {
-        super.writeToNBT(compound);
+    public CompoundNBT write(CompoundNBT compound) {
+        super.write(compound);
 
         //TODO I sort of broke this with custom names, I need to fix this later
 //        if (slots.hasCustomName()) {
 //            compound.setString("customName", customName);
 //        }
 
-        compound.setInteger("energy", energy);
-        
-        slots.writeToNBT(compound);
+        compound.putInt("energy", energy);
+
+        slots.write(compound);
 
         return compound;
     }
 
+
     @Override
-    public void readFromNBT(CompoundNBT compound) {
-        super.readFromNBT(compound);
+    public void read(CompoundNBT compound) {
+        super.read(compound);
 
         //TODO I sort of broke this with custom names, I need to fix this later
 //        customName = compound.getString("customName");
 
-        energy = compound.getInteger("energy");
-        
-        slots.readFromNBT(compound);
+        energy = compound.getInt("energy");
+
+        slots.read(compound);
     }
 
     public int getField(int id) {
@@ -290,18 +289,11 @@ public class TileEntityHenhouse extends TileEntity implements IInventoryGui {
         return energy;
     }
 
-	@SuppressWarnings("unchecked")
     @Override
-    public <T> T getCapability(Capability<T> capability, Direction facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) this.slots;
+            return LazyOptional.of(() -> this.slots).cast();
         }
         return super.getCapability(capability, facing);
-    }
-		
-    @Override
-    public boolean hasCapability(Capability<?> capability, Direction facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
-        super.hasCapability(capability, facing);
     }
 }

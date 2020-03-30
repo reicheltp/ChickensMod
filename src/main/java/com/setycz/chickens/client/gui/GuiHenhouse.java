@@ -23,7 +23,7 @@ public class GuiHenhouse extends ContainerScreen {
     private final TileEntityHenhouse tileEntityHenhouse;
 
     public GuiHenhouse(PlayerInventory playerInv, TileEntityHenhouse tileEntityHenhouse) {
-        super(new ContainerHenhouse(playerInv, tileEntityHenhouse));
+        super(new ContainerHenhouse(playerInv, tileEntityHenhouse), playerInv, new TranslationTextComponent("MISSING_TEST_TEST"));
         this.playerInv = playerInv;
         this.tileEntityHenhouse = tileEntityHenhouse;
         this.ySize = 166;

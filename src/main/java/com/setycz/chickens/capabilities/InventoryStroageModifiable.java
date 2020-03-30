@@ -90,14 +90,14 @@ public class InventoryStroageModifiable extends ItemStackHandler
 	    }
 	    
 	    
-	    public void writeToNBT(CompoundNBT compound)
+	    public void write(CompoundNBT compound)
 	    {
-	    	compound.setTag("Inventory", serializeNBT());
+	    	compound.put("Inventory", serializeNBT());
         }
 	     
-	    public void readFromNBT(CompoundNBT compound)
+	    public void read(CompoundNBT compound)
 	    {
-	    	deserializeNBT(compound.getCompoundTag("Inventory"));
+	    	deserializeNBT(compound.getCompound("Inventory"));
 	    }
 
 }
